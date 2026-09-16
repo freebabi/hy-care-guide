@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { EduMaterial } from "@/lib/hy-cure-data";
+import type { EduMaterial } from "@/lib/care-guide-data";
 import { formatTime, getVideoMeta } from "@/lib/preview-content";
 import { FormatIcon, PauseIcon, PlayIcon } from "../icons";
 import Modal from "./Modal";

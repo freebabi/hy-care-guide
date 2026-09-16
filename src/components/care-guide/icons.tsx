@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import type { MaterialFormat } from "@/lib/hy-cure-data";
+import type { MaterialFormat } from "@/lib/care-guide-data";
 
 type IconProps = SVGProps<SVGSVGElement>;
 

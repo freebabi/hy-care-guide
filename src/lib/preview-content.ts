@@ -1,4 +1,4 @@
-import type { EduMaterial } from "./hy-cure-data";
+import type { EduMaterial } from "./care-guide-data";
 
 /* ------------------------------- 카드뉴스 ------------------------------- */
 

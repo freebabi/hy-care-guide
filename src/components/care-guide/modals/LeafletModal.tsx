@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { EduMaterial } from "@/lib/hy-cure-data";
+import type { EduMaterial } from "@/lib/care-guide-data";
 import { getLeafletTabs, type LeafletCalloutType } from "@/lib/preview-content";
 import { ChatIcon, DownloadIcon, FormatIcon, LeafletIcon, LightbulbIcon, WarningIcon } from "../icons";
 import Modal from "./Modal";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { DEPARTMENTS, MATERIALS, NOTE_TYPES } from "@/lib/hy-cure-data";
+import { DEPARTMENTS, MATERIALS, NOTE_TYPES } from "@/lib/care-guide-data";
 import MaterialCard from "./MaterialCard";
 import AlimtalkPhoneMockup from "./AlimtalkPhoneMockup";
 import MaterialPreviewModal from "./modals/MaterialPreviewModal";

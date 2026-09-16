@@ -1,9 +1,9 @@
-import Header from "@/components/hy-cure/Header";
-import Hero from "@/components/hy-cure/Hero";
-import CurationSimulator from "@/components/hy-cure/CurationSimulator";
-import MaterialLibrary from "@/components/hy-cure/MaterialLibrary";
-import EffectsSection from "@/components/hy-cure/EffectsSection";
-import Footer from "@/components/hy-cure/Footer";
+import Header from "@/components/care-guide/Header";
+import Hero from "@/components/care-guide/Hero";
+import CurationSimulator from "@/components/care-guide/CurationSimulator";
+import MaterialLibrary from "@/components/care-guide/MaterialLibrary";
+import EffectsSection from "@/components/care-guide/EffectsSection";
+import Footer from "@/components/care-guide/Footer";
 
 export default function Home() {
   return (

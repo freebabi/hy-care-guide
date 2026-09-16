@@ -1,4 +1,4 @@
-import type { EduMaterial, MaterialFormat } from "@/lib/hy-cure-data";
+import type { EduMaterial, MaterialFormat } from "@/lib/care-guide-data";
 import { FormatIcon } from "./icons";
 
 const FORMAT_BADGE: Record<MaterialFormat, string> = {

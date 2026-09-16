@@ -1,6 +1,6 @@
 "use client";
 
-import type { EduMaterial } from "@/lib/hy-cure-data";
+import type { EduMaterial } from "@/lib/care-guide-data";
 import { ChatIcon, CloseIcon, FormatIcon, SendCheckIcon } from "./icons";
 
 export default function AlimtalkPhoneMockup({

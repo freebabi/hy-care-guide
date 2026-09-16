@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { EduMaterial } from "@/lib/hy-cure-data";
+import type { EduMaterial } from "@/lib/care-guide-data";
 import { getCardNewsSlides } from "@/lib/preview-content";
 import { ChevronLeftIcon, ChevronRightIcon, FormatIcon } from "../icons";
 import Modal from "./Modal";

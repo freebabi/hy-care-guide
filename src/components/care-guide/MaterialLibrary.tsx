@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CATEGORIES, MATERIALS } from "@/lib/hy-cure-data";
+import { CATEGORIES, MATERIALS } from "@/lib/care-guide-data";
 import MaterialCard from "./MaterialCard";
 import MaterialPreviewModal from "./modals/MaterialPreviewModal";
 
