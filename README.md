@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HY CARE GUIDE (한양 케어가이드)
 
-## Getting Started
+환자의 진료 단계에 맞는 안내를 추천하고, 의료진이 선택해 환자에게 전달하는
+**환자 여정 기반 안내 서비스** 프로토타입입니다.
 
-First, run the development server:
+> 서비스 철학: "필요한 순간, 필요한 안내를."
+
+## 구성
+
+- **직원용 웹** (`/`, `/patients/[id]`, `/library`, `/history`, `/cms`, `/dashboard`) — 환자 검색 → 현재 진료 단계 확인 → 추천 안내 선택 → 발송까지의 핵심 업무 흐름
+- **환자용 모바일 웹** (`/g/[token]`, `/g/[token]/guides/[contentId]`, `/g/[token]/my-guides`) — 알림톡/문자/QR로 전달받은 링크로 진입하는 "오늘의 안내" 화면
+
+## 실행
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) 접속 시 직원용 홈("환자 안내")으로 진입합니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 기술 스택
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js(App Router) + TypeScript + Tailwind CSS
+- 추천 로직: `src/lib/care-guide/recommendation-service.ts` (Rule-based, 추후 AI/외부 API로 교체 가능하도록 별도 모듈로 분리)
+- 발송(Mock): `src/lib/care-guide/notification-service.ts`
+- 데이터: `src/lib/care-guide/{guides-data,patients-data}.ts` (정적 시드) + `localStorage`(CMS 편집분/발송 이력 — 프로토타입용 "로컬 DB" 역할)
 
-## Learn More
+## 프로토타입 범위와 한계
 
-To learn more about Next.js, take a look at the following resources:
+- 환자, 진료 정보, 발송 이력은 **모두 가상 데이터**이며 실제 EMR과 연동되어 있지 않습니다.
+- 카카오 알림톡/SMS는 실제 API를 연동하지 않은 Mock이며, QR은 로컬 페이지 링크(`/g/[token]`)를 인코딩합니다.
+- 안내 콘텐츠 중 구체적인 수치(금식 시간, 복용법 등)는 프로토타입 예시이며, **병원 공식 검토 없이 실제 환자 안내에 사용해서는 안 됩니다.** (`needsClinicalReview: true`로 표시된 항목)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 실제 서비스 전환 시 반드시 검토해야 할 항목
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+이 프로토타입은 개인정보를 다루지 않는 것을 전제로 설계되었습니다. 실제 서비스로
+전환할 경우 최소한 아래 항목을 별도로 설계·검토해야 합니다.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **개인정보/의료정보 보호**: 환자 식별 정보(이름, 등록번호, 진료 정보)는 프론트엔드에 직접 저장/노출되지 않도록 백엔드·EMR 연계 구조로 재설계
+- **접근 권한/사용자 인증**: 직원 로그인, 역할 기반 권한(RBAC), 환자 본인 확인 절차
+- **접속 로그/감사 추적**: 누가 어떤 환자에게 어떤 안내를 언제 보냈는지에 대한 감사 로그
+- **토큰 기반 URL 보안**: 현재 `/g/[token]`은 만료 없는 임의 문자열입니다. 실제로는 서명된 토큰 + 만료시간 + 1회성/제한 접근 등이 필요합니다
+- **EMR 연계 보안**: 프론트엔드가 EMR에 직접 접근하지 않고, 인증된 백엔드 API 레이어를 경유하도록 구성 (`/services` 계층이 이 경계를 담당하도록 분리되어 있음)
+- **외부 메시징 연계**: 카카오 알림톡/SMS 발송사와의 실제 계약, 발신 프로필/템플릿 사전 심사 및 등록
+- **병원 내부망/외부망 정책**: 환자용 모바일 웹과 직원용 웹의 네트워크 분리, 방화벽 정책
+- **콘텐츠 임상 검토**: 모든 환자 안내 콘텐츠는 게시 전 관련 진료과·간호부·약제부 등의 공식 검토를 거쳐야 합니다
