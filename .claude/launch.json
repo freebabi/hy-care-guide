@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hello-page-dev",
+      "runtimeExecutable": "C:\\Users\\Dell7050\\Desktop\\hello-page\\.claude\\dev-with-node.cmd",
+      "runtimeArgs": [],
+      "port": 3000
+    }
+  ]
+}
