@@ -28,7 +28,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-lg font-bold text-white">한양큐어 (HY-Cure)</p>
+            <p className="text-lg font-bold text-white">한양 케어가이드 (HY-Cure)</p>
             <p className="mt-1 text-sm text-slate-400">서비스 문의 · 시스템 구축 가이드</p>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">

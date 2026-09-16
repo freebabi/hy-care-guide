@@ -20,14 +20,14 @@ export default function Header() {
         <a href="#top" className="flex items-center gap-2.5">
           <Image
             src="/logo.png"
-            alt="한양큐어 HY-Cure 로고"
+            alt="한양 케어가이드 HY-Cure 로고"
             width={1025}
             height={1004}
             priority
             className="h-9 w-9 object-contain"
           />
           <span className="text-lg font-extrabold text-brand-blue">
-            한양큐어 <span className="font-medium text-slate-500">HY-Cure</span>
+            한양 케어가이드 <span className="font-medium text-slate-500">HY-Cure</span>
           </span>
         </a>
 

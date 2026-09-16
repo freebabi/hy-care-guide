@@ -54,7 +54,7 @@ export default function EffectsSection() {
       <div className="mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
-            한양큐어 도입 효과 및 필요성
+            한양 케어가이드 도입 효과 및 필요성
           </h2>
           <p className="mt-2 text-slate-600">
             EMR 연동을 기반으로 의료진과 환자 모두에게 실질적인 변화를 만듭니다.

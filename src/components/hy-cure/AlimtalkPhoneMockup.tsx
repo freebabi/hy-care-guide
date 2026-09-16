@@ -40,7 +40,7 @@ export default function AlimtalkPhoneMockup({
             <ChatIcon className="h-4 w-4" />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-slate-800">한양큐어 알림톡</p>
+            <p className="truncate text-sm font-bold text-slate-800">한양 케어가이드 알림톡</p>
             <p className="text-[10px] text-slate-600">채널 · 교육자료 자동발송</p>
           </div>
         </div>

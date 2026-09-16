@@ -9,9 +9,9 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "한양큐어(HY-Cure) | EMR 기반 맞춤형 환자 교육자료 플랫폼",
+  title: "한양 케어가이드(HY-Cure) | EMR 기반 맞춤형 환자 교육자료 플랫폼",
   description:
-    "EMR 진료 정보와 자동 연동되어 환자에게 꼭 필요한 맞춤형 교육자료를 추천하고 발송하는 스마트 헬스케어 플랫폼, 한양큐어(HY-Cure)입니다.",
+    "EMR 진료 정보와 자동 연동되어 환자에게 꼭 필요한 맞춤형 교육자료를 추천하고 발송하는 스마트 헬스케어 플랫폼, 한양 케어가이드(HY-Cure)입니다.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

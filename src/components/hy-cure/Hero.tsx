@@ -44,7 +44,7 @@ export default function Hero() {
               <div className="flex flex-wrap items-center gap-3">
                 <Image
                   src="/logo.png"
-                  alt="한양큐어 HY-Cure 로고"
+                  alt="한양 케어가이드 HY-Cure 로고"
                   width={1025}
                   height={1004}
                   className="h-10 w-10 rounded-lg bg-white/90 object-contain p-1 shadow-sm"
