@@ -44,7 +44,7 @@ export default function Hero() {
               <div className="flex flex-wrap items-center gap-3">
                 <Image
                   src="/logo.png"
-                  alt="한양 케어가이드 HY-Cure 로고"
+                  alt="한양 케어가이드 HY Care Guide 로고"
                   width={1025}
                   height={1004}
                   className="h-10 w-10 rounded-lg bg-white/90 object-contain p-1 shadow-sm"
@@ -56,7 +56,7 @@ export default function Hero() {
 
               <h1 className="mt-4 text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
                 환자 맞춤형 교육자료의 시작,
-                <br className="hidden sm:block" /> HY-Cure
+                <br className="hidden sm:block" /> HY Care Guide
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-cyan-50 sm:text-lg">
                 EMR 진료 정보와 자동 연동되어 환자에게 가장 필요한 맞춤형 헬스케어 콘텐츠를

@@ -31,7 +31,7 @@ export default function AlimtalkPhoneMockup({
         {/* 상태바 */}
         <div className="flex items-center justify-between bg-slate-900 px-5 pb-1 pt-2 text-[10px] font-semibold text-white">
           <span>9:41</span>
-          <span>HY-Cure</span>
+          <span>HY Care Guide</span>
         </div>
 
         {/* 카카오톡 스타일 채팅 헤더 */}
