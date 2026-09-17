@@ -45,14 +45,17 @@ const inputClass =
 export default function GuideFormModal({
   initialGuide,
   nextId,
+  existingSlugs,
   onClose,
   onSave,
 }: {
   initialGuide: GuideContent | null;
   nextId: string;
+  existingSlugs: string[];
   onClose: () => void;
   onSave: (guide: GuideContent) => void;
 }) {
+  const [slugError, setSlugError] = useState<string | null>(null);
   const [form, setForm] = useState<GuideContent>(
     initialGuide ?? {
       contentId: nextId,
@@ -82,9 +85,21 @@ export default function GuideFormModal({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.title.trim() || !form.summary.trim()) return;
+
+    const slug = slugify(form.slug.trim() || form.title);
+    if (!slug) {
+      setSlugError("URL에 사용할 수 있는 문자가 없습니다. 영문/숫자/한글로 입력해주세요.");
+      return;
+    }
+    if (existingSlugs.includes(slug)) {
+      setSlugError(`이미 사용 중인 URL입니다: /c/${slug}`);
+      return;
+    }
+    setSlugError(null);
+
     onSave({
       ...form,
-      slug: form.slug.trim() || slugify(form.title),
+      slug,
       version: initialGuide ? form.version + 1 : 1,
       lastUpdated: new Date().toISOString().slice(0, 10),
     });
@@ -133,10 +148,14 @@ export default function GuideFormModal({
         <Field label="콘텐츠 URL(/c/[slug]) — 비워두면 제목에서 자동 생성">
           <input
             value={form.slug}
-            onChange={(e) => setForm({ ...form, slug: e.target.value })}
+            onChange={(e) => {
+              setForm({ ...form, slug: e.target.value });
+              setSlugError(null);
+            }}
             placeholder="예: ct-prep"
             className={inputClass}
           />
+          {slugError && <p className="mt-1 text-xs font-semibold text-red-600">{slugError}</p>}
         </Field>
 
         <Field label="진료과 (복수 선택 가능)">

@@ -159,6 +159,7 @@ export default function StaffHomePage() {
         <GuideFormModal
           initialGuide={editingGuide}
           nextId={nextContentId(guides)}
+          existingSlugs={guides.filter((g) => g.contentId !== editingGuide.contentId).map((g) => g.slug)}
           onClose={() => setEditingGuide(null)}
           onSave={(guide) => {
             upsertGuide(guide);

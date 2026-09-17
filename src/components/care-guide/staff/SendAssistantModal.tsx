@@ -19,13 +19,23 @@ const CHANNEL_ICON: Record<DeliveryChannel, (props: { className?: string }) => R
   kakao: ChatIcon,
 };
 
-function CopyButton({ label, text, onCopied }: { label: string; text: string; onCopied: () => void }) {
+function CopyButton({
+  label,
+  text,
+  onCopied,
+  onFailed,
+}: {
+  label: string;
+  text: string;
+  onCopied: () => void;
+  onFailed: () => void;
+}) {
   async function handleClick() {
     try {
       await navigator.clipboard.writeText(text);
       onCopied();
     } catch {
-      onCopied();
+      onFailed();
     }
   }
   return (
@@ -77,6 +87,10 @@ export default function SendAssistantModal({
   function notifyCopied(message: string) {
     setToast(message);
     recordSendPrep(guide, channel);
+  }
+
+  function notifyCopyFailed() {
+    setToast("복사에 실패했습니다. 화면에 표시된 내용을 직접 선택해 복사해주세요.");
   }
 
   function handleDownloadQr() {
@@ -133,9 +147,24 @@ export default function SendAssistantModal({
               {sms.full}
             </pre>
             <div className="mt-3 flex flex-wrap gap-2">
-              <CopyButton label="문구 복사" text={sms.messageOnly} onCopied={() => notifyCopied("문구가 복사되었습니다.")} />
-              <CopyButton label="링크만 복사" text={sms.link} onCopied={() => notifyCopied("링크가 복사되었습니다.")} />
-              <CopyButton label="전체 내용 복사" text={sms.full} onCopied={() => notifyCopied("전체 내용이 복사되었습니다.")} />
+              <CopyButton
+                label="문구 복사"
+                text={sms.messageOnly}
+                onCopied={() => notifyCopied("문구가 복사되었습니다.")}
+                onFailed={notifyCopyFailed}
+              />
+              <CopyButton
+                label="링크만 복사"
+                text={sms.link}
+                onCopied={() => notifyCopied("링크가 복사되었습니다.")}
+                onFailed={notifyCopyFailed}
+              />
+              <CopyButton
+                label="전체 내용 복사"
+                text={sms.full}
+                onCopied={() => notifyCopied("전체 내용이 복사되었습니다.")}
+                onFailed={notifyCopyFailed}
+              />
             </div>
           </div>
         )}
@@ -157,7 +186,12 @@ export default function SendAssistantModal({
             )}
             <p className="break-all text-center text-xs text-slate-400">{link}</p>
             <div className="flex flex-wrap justify-center gap-2">
-              <CopyButton label="링크 복사" text={link} onCopied={() => notifyCopied("링크가 복사되었습니다.")} />
+              <CopyButton
+                label="링크 복사"
+                text={link}
+                onCopied={() => notifyCopied("링크가 복사되었습니다.")}
+                onFailed={notifyCopyFailed}
+              />
               <button
                 type="button"
                 onClick={handleDownloadQr}
@@ -186,7 +220,12 @@ export default function SendAssistantModal({
               승인된 API 연동을 전제로 합니다.
             </p>
             <div className="mt-3">
-              <CopyButton label="내용 복사" text={kakaoText} onCopied={() => notifyCopied("내용이 복사되었습니다.")} />
+              <CopyButton
+                label="내용 복사"
+                text={kakaoText}
+                onCopied={() => notifyCopied("내용이 복사되었습니다.")}
+                onFailed={notifyCopyFailed}
+              />
             </div>
           </div>
         )}

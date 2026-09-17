@@ -123,6 +123,9 @@ export default function CmsPage() {
         <GuideFormModal
           initialGuide={editingGuide === "new" ? null : editingGuide}
           nextId={nextContentId(guides)}
+          existingSlugs={guides
+            .filter((g) => editingGuide === "new" || g.contentId !== editingGuide.contentId)
+            .map((g) => g.slug)}
           onClose={() => setEditingGuide(null)}
           onSave={(guide) => {
             upsertGuide(guide);

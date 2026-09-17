@@ -21,10 +21,17 @@ const MOCK_TOP_CONTENT: { title: string; views: number }[] = [
   { title: "위내시경 검사 안내", views: 132 },
 ];
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatCard({ label, value, isExample }: { label: string; value: string; isExample?: boolean }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <p className="text-xs font-semibold text-slate-500">{label}</p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold text-slate-500">{label}</p>
+        {isExample && (
+          <span className="shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+            예시 데이터
+          </span>
+        )}
+      </div>
       <p className="mt-2 text-2xl font-extrabold text-slate-900">{value}</p>
     </div>
   );
@@ -90,7 +97,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         {MOCK_KPI.map((kpi) => (
-          <StatCard key={kpi.label} {...kpi} />
+          <StatCard key={kpi.label} {...kpi} isExample />
         ))}
       </div>
 
