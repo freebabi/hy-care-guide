@@ -7,10 +7,9 @@ import { useState } from "react";
 import { ChartIcon, HistoryIcon, MenuIcon, CloseIcon, DocumentPlusIcon } from "../icons";
 
 const NAV_ITEMS = [
-  { href: "/", label: "환자 안내" },
-  { href: "/library", label: "환자 안내 콘텐츠" },
-  { href: "/history", label: "발송 이력" },
+  { href: "/", label: "환자 안내 콘텐츠" },
   { href: "/cms", label: "콘텐츠 관리" },
+  { href: "/history", label: "발송 이력" },
   { href: "/dashboard", label: "통계" },
 ];
 

@@ -12,10 +12,12 @@ const CATEGORY_STYLE: Record<GuideCategory, string> = {
 export default function GuideCard({
   guide,
   onPreview,
+  onEdit,
   showStatus,
 }: {
   guide: GuideContent;
   onPreview: () => void;
+  onEdit?: () => void;
   showStatus?: boolean;
 }) {
   return (
@@ -47,13 +49,24 @@ export default function GuideCard({
       <h4 className="text-[15px] font-bold leading-snug text-slate-900">{guide.title}</h4>
       <p className="line-clamp-2 text-sm text-slate-600">{guide.summary}</p>
 
-      <button
-        type="button"
-        onClick={onPreview}
-        className="self-start rounded-full border border-slate-300 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue"
-      >
-        미리보기
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={onPreview}
+          className="self-start rounded-full border border-slate-300 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue"
+        >
+          미리보기
+        </button>
+        {onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="self-start rounded-full border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-400 transition hover:border-slate-400 hover:text-slate-700"
+          >
+            수정
+          </button>
+        )}
+      </div>
     </article>
   );
 }
