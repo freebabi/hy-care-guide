@@ -10,7 +10,7 @@ import {
   buildSmsMessage,
   recordSendPrep,
 } from "@/lib/care-guide/notification-service";
-import { ChatIcon, PhoneIcon, QrIcon, SendCheckIcon } from "../icons";
+import { ChatIcon, DownloadIcon, PhoneIcon, QrIcon, SendCheckIcon } from "../icons";
 import Modal from "../modals/Modal";
 
 const CHANNEL_ICON: Record<DeliveryChannel, (props: { className?: string }) => React.JSX.Element> = {
@@ -58,7 +58,7 @@ export default function SendAssistantModal({
   useEffect(() => {
     if (channel !== "qr") return;
     let cancelled = false;
-    QRCode.toDataURL(link, { width: 176, margin: 1, color: { dark: "#003366" } })
+    QRCode.toDataURL(link, { width: 512, margin: 1, color: { dark: "#003366" } })
       .then((url) => {
         if (!cancelled) setQrDataUrl(url);
       })
@@ -77,6 +77,18 @@ export default function SendAssistantModal({
   function notifyCopied(message: string) {
     setToast(message);
     recordSendPrep(guide, channel, "copied");
+  }
+
+  function handleDownloadQr() {
+    if (!qrDataUrl) return;
+    const a = document.createElement("a");
+    a.href = qrDataUrl;
+    a.download = `${guide.slug}-qr.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setToast("QR 이미지가 다운로드되었습니다.");
+    recordSendPrep(guide, "qr", "qr_generated");
   }
 
   return (
@@ -145,7 +157,17 @@ export default function SendAssistantModal({
               <div className="h-44 w-44 animate-pulse rounded-lg bg-slate-200" />
             )}
             <p className="break-all text-center text-xs text-slate-400">{link}</p>
-            <CopyButton label="링크 복사" text={link} onCopied={() => notifyCopied("링크가 복사되었습니다.")} />
+            <div className="flex flex-wrap justify-center gap-2">
+              <CopyButton label="링크 복사" text={link} onCopied={() => notifyCopied("링크가 복사되었습니다.")} />
+              <button
+                type="button"
+                onClick={handleDownloadQr}
+                disabled={!qrDataUrl}
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <DownloadIcon className="h-3.5 w-3.5" /> QR 이미지 다운로드
+              </button>
+            </div>
           </div>
         )}
 
