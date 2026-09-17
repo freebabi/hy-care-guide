@@ -1,5 +1,18 @@
-import type { GuideContent } from "@/lib/care-guide/types";
+import type { GuideCategory, GuideContent } from "@/lib/care-guide/types";
 import { CategoryIcon, ClockIcon, PhoneIcon, PinIcon, WarningIcon } from "./icons";
+
+/**
+ * before/during/after 필드는 카테고리마다 의미가 달라 섹션 제목을
+ * "검사·치료 전/당일/후"로 고정하면 입원·퇴원·기타 콘텐츠에서 어색해집니다.
+ * 카테고리별로 자연스러운 라벨을 매핑합니다.
+ */
+const PHASE_LABELS: Record<GuideCategory, { before: string; during: string; after: string }> = {
+  검사: { before: "검사 전", during: "검사 당일", after: "검사 후" },
+  수술: { before: "수술 전", during: "수술 당일", after: "수술 후" },
+  입원: { before: "입원 중 확인사항", during: "입원 중 안내", after: "입원 중 주의사항" },
+  퇴원: { before: "퇴원 준비", during: "퇴원 당일", after: "퇴원 후 생활" },
+  기타: { before: "안내", during: "안내", after: "참고사항" },
+};
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -21,6 +34,8 @@ export default function GuideDetailView({
   variant?: "staff" | "patient";
   onSelectRelated?: (contentId: string) => void;
 }) {
+  const phaseLabels = PHASE_LABELS[guide.category];
+
   return (
     <div className="flex flex-col gap-5">
       <div>
@@ -50,9 +65,9 @@ export default function GuideDetailView({
         </div>
       )}
 
-      {guide.before && <Section title="검사·치료 전">{guide.before}</Section>}
-      {guide.during && <Section title="검사·치료 당일">{guide.during}</Section>}
-      {guide.after && <Section title="검사·치료 후">{guide.after}</Section>}
+      {guide.before && <Section title={phaseLabels.before}>{guide.before}</Section>}
+      {guide.during && <Section title={phaseLabels.during}>{guide.during}</Section>}
+      {guide.after && <Section title={phaseLabels.after}>{guide.after}</Section>}
 
       {guide.faq && guide.faq.length > 0 && (
         <Section title="자주 묻는 질문">
