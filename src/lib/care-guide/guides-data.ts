@@ -515,11 +515,18 @@ export const GUIDES: GuideContent[] = [
     patientStages: ["admitted"],
     summary: "입원 중 낙상을 예방하기 위한 생활 수칙을 안내합니다.",
     importantNotice: "어지러움이 있을 때는 침대에서 천천히 일어나고, 필요 시 호출벨로 도움을 요청하세요.",
-    estimatedReadMinutes: 1,
+    before: "침대 난간은 항상 올려두고, 바닥의 물기나 전선·장애물을 치워 미끄럼을 예방하세요. 미끄럼 방지 신발을 착용하는 것도 도움이 됩니다.",
+    faq: [
+      {
+        question: "화장실은 혼자 가도 되나요?",
+        answer: "어지럽거나 거동이 불편하다면 반드시 호출벨을 눌러 도움을 받은 후 이동하세요.",
+      },
+    ],
+    estimatedReadMinutes: 2,
     status: "게시",
     needsClinicalReview: false,
     version: 1,
-    lastUpdated: "2026-07-01",
+    lastUpdated: "2026-09-17",
   },
   {
     contentId: "c30",
@@ -563,11 +570,18 @@ export const GUIDES: GuideContent[] = [
     patientStages: ["admitted"],
     summary: "입원 중 자가 지참약 관리와 복약 시간 준수 방법을 안내합니다.",
     importantNotice: "집에서 가져온 약은 반드시 담당 의료진에게 알리고 확인받은 후 복용해주세요.",
+    before: "입원 시 복용 중인 모든 약(처방약, 건강기능식품 포함)을 간호사에게 전달해 확인받으세요.",
+    faq: [
+      {
+        question: "가져온 자가약을 계속 먹어도 되나요?",
+        answer: "담당 의료진이 확인 후 복용 가능 여부를 알려드립니다. 확인 전까지는 임의로 복용하지 마세요.",
+      },
+    ],
     estimatedReadMinutes: 2,
     status: "게시",
     needsClinicalReview: true,
     version: 1,
-    lastUpdated: "2026-07-01",
+    lastUpdated: "2026-09-17",
   },
   {
     contentId: "c33",
@@ -578,12 +592,19 @@ export const GUIDES: GuideContent[] = [
     departments: ["전과공통"],
     patientStages: ["admitted"],
     summary: "병원 내 감염 예방을 위한 손위생 수칙을 안내합니다.",
+    importantNotice: "발열, 기침 등 감염 의심 증상이 있으면 병실 이동 전 반드시 담당 의료진에게 먼저 알려주세요.",
     before: "병실 출입 전후, 식사 전, 화장실 사용 후 손 소독제를 사용해주세요.",
-    estimatedReadMinutes: 1,
+    faq: [
+      {
+        question: "손 소독제는 어디에 있나요?",
+        answer: "병실 입구와 병동 곳곳에 비치되어 있으며, 부족하면 담당 간호사에게 요청하세요.",
+      },
+    ],
+    estimatedReadMinutes: 2,
     status: "게시",
-    needsClinicalReview: false,
+    needsClinicalReview: true,
     version: 1,
-    lastUpdated: "2026-07-01",
+    lastUpdated: "2026-09-17",
   },
   {
     contentId: "c34",
