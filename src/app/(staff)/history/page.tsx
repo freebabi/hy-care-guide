@@ -3,11 +3,7 @@
 import { getSendLog } from "@/lib/care-guide/notification-service";
 import { useClientValue } from "@/lib/care-guide/use-client-value";
 import { CHANNEL_LABEL } from "@/lib/care-guide/types";
-
-const ACTION_LABEL = {
-  copied: "문구/링크 복사",
-  qr_generated: "QR 생성",
-} as const;
+import { SendCheckIcon } from "@/components/care-guide/icons";
 
 function formatDateTime(iso: string) {
   const d = new Date(iso);
@@ -22,7 +18,7 @@ export default function HistoryPage() {
       <div>
         <h1 className="text-xl font-extrabold text-slate-900">발송 이력</h1>
         <p className="mt-1 text-sm text-slate-500">
-          환자 식별정보 없이, 어떤 안내를 어떤 채널로 준비했는지 기록합니다.
+          PII 제로 원칙에 따라 발송 시각·콘텐츠·채널·완료 여부만 기록합니다(환자 식별정보 없음).
         </p>
       </div>
 
@@ -35,11 +31,10 @@ export default function HistoryPage() {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-slate-100 bg-slate-50 text-xs font-bold text-slate-500">
               <tr>
-                <th className="px-4 py-3">일시</th>
+                <th className="px-4 py-3">발송 시각</th>
                 <th className="px-4 py-3">콘텐츠</th>
                 <th className="px-4 py-3">채널</th>
-                <th className="px-4 py-3">동작</th>
-                <th className="px-4 py-3">담당자</th>
+                <th className="px-4 py-3">완료 여부</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -52,8 +47,11 @@ export default function HistoryPage() {
                       {CHANNEL_LABEL[r.channel]}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{ACTION_LABEL[r.action]}</td>
-                  <td className="px-4 py-3 text-slate-500">{r.performedBy}</td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
+                      <SendCheckIcon className="h-3.5 w-3.5" /> {r.completed ? "완료" : "미완료"}
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>

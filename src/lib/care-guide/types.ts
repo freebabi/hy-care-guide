@@ -91,14 +91,14 @@ export const CHANNEL_LABEL: Record<DeliveryChannel, string> = {
 
 /**
  * 환자 식별정보를 전혀 포함하지 않는 발송 준비 이력입니다.
- * "언제 누가 어떤 콘텐츠를 어떤 채널로 준비했는지"만 기록합니다.
+ * PII 제로 원칙에 따라 "발송 시각 / 콘텐츠(content_id) / 채널 / 완료 여부"
+ * 4개 항목으로만 구성하며, 담당 직원 이름 등 그 외 정보는 기록하지 않습니다.
  */
 export interface SendLogEntry {
   logId: string;
   contentId: string;
   contentTitle: string;
   channel: DeliveryChannel;
-  action: "copied" | "qr_generated";
+  completed: boolean;
   performedAt: string;
-  performedBy: string;
 }

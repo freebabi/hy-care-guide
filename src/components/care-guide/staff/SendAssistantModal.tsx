@@ -76,7 +76,7 @@ export default function SendAssistantModal({
 
   function notifyCopied(message: string) {
     setToast(message);
-    recordSendPrep(guide, channel, "copied");
+    recordSendPrep(guide, channel);
   }
 
   function handleDownloadQr() {
@@ -88,7 +88,7 @@ export default function SendAssistantModal({
     a.click();
     a.remove();
     setToast("QR 이미지가 다운로드되었습니다.");
-    recordSendPrep(guide, "qr", "qr_generated");
+    recordSendPrep(guide, "qr");
   }
 
   return (
@@ -151,7 +151,7 @@ export default function SendAssistantModal({
                 alt={`${guide.title} 안내 페이지 QR 코드`}
                 width={176}
                 height={176}
-                onLoad={() => recordSendPrep(guide, "qr", "qr_generated")}
+                onLoad={() => recordSendPrep(guide, "qr")}
               />
             ) : (
               <div className="h-44 w-44 animate-pulse rounded-lg bg-slate-200" />

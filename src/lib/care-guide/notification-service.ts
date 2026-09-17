@@ -1,7 +1,7 @@
 import { readStorage, writeStorage } from "./storage";
 import type { DeliveryChannel, GuideContent, SendLogEntry } from "./types";
 
-const STORAGE_KEY = "hycg.sendlog.v1";
+const STORAGE_KEY = "hycg.sendlog.v2";
 const HOSPITAL_NAME = "한양대학교병원";
 const SITE_ORIGIN = "https://guide.hanyang.ac.kr";
 
@@ -79,20 +79,14 @@ function saveSendLog(entries: SendLogEntry[]): void {
   writeStorage(STORAGE_KEY, entries);
 }
 
-export function recordSendPrep(
-  guide: GuideContent,
-  channel: DeliveryChannel,
-  action: SendLogEntry["action"],
-  performedBy = "서비스전략팀 담당자",
-): SendLogEntry {
+export function recordSendPrep(guide: GuideContent, channel: DeliveryChannel): SendLogEntry {
   const entry: SendLogEntry = {
     logId: generateLogId(),
     contentId: guide.contentId,
     contentTitle: guide.title,
     channel,
-    action,
+    completed: true,
     performedAt: new Date().toISOString(),
-    performedBy,
   };
   saveSendLog([entry, ...getSendLog()]);
   return entry;
