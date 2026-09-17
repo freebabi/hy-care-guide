@@ -46,6 +46,13 @@ export interface KakaoMessagePreview {
   buttonLabel: string;
 }
 
+/**
+ * 카카오 알림톡 미리보기 문구만 생성합니다. 실제 카카오 비즈메시지 API는
+ * 호출하지 않습니다(발송 버튼이 없고 "복사"만 제공하는 이유). Phase 2에서
+ * 병원이 카카오 발신 프로필/템플릿 심사를 마치면, 이 함수의 반환값을
+ * 그대로 실제 발송 API 페이로드로 재사용하고 "발송 실행" 함수만
+ * 새로 추가하면 됩니다.
+ */
 export function buildKakaoMessage(guide: GuideContent): KakaoMessagePreview {
   return {
     title: `[${HOSPITAL_NAME}] ${guide.title}`,
