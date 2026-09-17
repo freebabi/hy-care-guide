@@ -1,0 +1,23 @@
+[
+  {
+    "content": "ct-prep",
+    "viewport": "iphone14-slow3g",
+    "loadMs": 24291,
+    "domContentLoadedMs": 13090.39999999851,
+    "firstPaintMs": 13104
+  },
+  {
+    "content": "pain-management",
+    "viewport": "iphone14-slow3g",
+    "loadMs": 20447,
+    "domContentLoadedMs": 13092.199999999255,
+    "firstPaintMs": 13128
+  },
+  {
+    "content": "find-test-room",
+    "viewport": "iphone14-slow3g",
+    "loadMs": 23603,
+    "domContentLoadedMs": 13148.60000000149,
+    "firstPaintMs": 13160
+  }
+]
