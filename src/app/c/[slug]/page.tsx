@@ -1,6 +1,19 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import ContentPageClient from "@/components/care-guide/patient/ContentPageClient";
 import { findGuideBySlug } from "@/lib/care-guide/guides-data";
+
+/**
+ * 배포 호스팅사(Vercel 등)에 종속되지 않도록, 지금 이 요청이 실제로 들어온
+ * Host 헤더를 그대로 읽어 절대 URL을 만듭니다. 어디에 배포하든 정확합니다.
+ */
+async function getRequestOrigin(): Promise<string> {
+  const h = await headers();
+  const host = h.get("host");
+  if (!host) return "";
+  const protocol = host.startsWith("localhost") || host.startsWith("127.0.0.1") ? "http" : "https";
+  return `${protocol}://${host}`;
+}
 
 type Params = { slug: string };
 
@@ -22,6 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
   const title = `한양대학교병원 ${guide.title}`;
   const description = guide.summary;
+  const origin = await getRequestOrigin();
+  const imageUrl = origin ? `${origin}/logo.png` : "/logo.png";
 
   return {
     title,
@@ -32,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       siteName: "한양 케어가이드",
       locale: "ko_KR",
       type: "article",
-      images: ["/logo.png"],
+      images: [imageUrl],
     },
   };
 }

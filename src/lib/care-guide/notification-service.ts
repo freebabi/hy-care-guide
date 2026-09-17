@@ -1,5 +1,5 @@
 import { readStorage, writeStorage } from "./storage";
-import { HOSPITAL_NAME, SITE_ORIGIN } from "./constants";
+import { HOSPITAL_NAME, getClientOrigin } from "./constants";
 import type { DeliveryChannel, GuideContent, SendLogEntry } from "./types";
 
 const STORAGE_KEY = "hycg.sendlog.v2";
@@ -14,8 +14,13 @@ const STORAGE_KEY = "hycg.sendlog.v2";
  * 실행을 분리해두었습니다.
  */
 
+/**
+ * 콘텐츠 고정 URL을 만듭니다. 이 함수는 클라이언트 컴포넌트(발송 어시스턴트)
+ * 에서만 호출되므로, 항상 지금 실제로 접속 중인 origin을 사용합니다 —
+ * 로컬 개발이면 localhost, 배포 후면 실제 배포 도메인이 자동으로 들어갑니다.
+ */
 export function buildContentUrl(slug: string): string {
-  return `${SITE_ORIGIN}/c/${slug}`;
+  return `${getClientOrigin()}/c/${slug}`;
 }
 
 /** 한글 받침 유무에 따라 "을"/"를" 조사를 골라줍니다. */
