@@ -2,7 +2,7 @@ import { GUIDES } from "./guides-data";
 import { readStorage, writeStorage } from "./storage";
 import type { GuideContent } from "./types";
 
-const STORAGE_KEY = "hycg.guides.v1";
+const STORAGE_KEY = "hycg.guides.v2";
 
 /** CMS에서 추가/수정한 콘텐츠까지 반영된 최신 콘텐츠 목록을 반환합니다. */
 export function loadGuides(): GuideContent[] {
@@ -40,5 +40,5 @@ export function nextContentId(guides: GuideContent[]): string {
     .map((g) => Number(g.contentId.replace(/[^0-9]/g, "")))
     .filter((n) => !Number.isNaN(n));
   const max = numbers.length > 0 ? Math.max(...numbers) : 0;
-  return `g${String(max + 1).padStart(2, "0")}`;
+  return `c${String(max + 1).padStart(2, "0")}`;
 }

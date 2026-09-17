@@ -4,18 +4,25 @@ export type Department =
   | "외과"
   | "정형외과"
   | "내과"
-  | "순환기내과";
+  | "순환기내과"
+  | "진단검사의학과"
+  | "핵의학과"
+  | "마취통증의학과"
+  | "재활의학과"
+  | "원무팀"
+  | "전과공통";
 
-/** 환자의 현재 진료 여정 단계 코드 */
+/**
+ * 환자 여정 단계 코드입니다. Phase 1에서는 환자 데이터가 없으므로
+ * 자동 추천에는 사용하지 않고, 콘텐츠 라이브러리의 "환자 여정 단계"
+ * 필터 용도로만 사용합니다. (Phase 3에서 환자 데이터와 재연결 예정)
+ */
 export type StageCode =
-  | "ct-scheduled"
-  | "mri-scheduled"
-  | "gastroscopy-scheduled"
-  | "colonoscopy-scheduled"
-  | "surgery-scheduled"
+  | "before-test"
+  | "before-surgery"
   | "admitted"
-  | "blood-test-scheduled"
-  | "discharge-scheduled";
+  | "before-discharge"
+  | "after-discharge";
 
 export interface StageInfo {
   code: StageCode;
@@ -23,17 +30,14 @@ export interface StageInfo {
 }
 
 export const STAGES: Record<StageCode, StageInfo> = {
-  "ct-scheduled": { code: "ct-scheduled", label: "CT 검사 예정" },
-  "mri-scheduled": { code: "mri-scheduled", label: "MRI 검사 예정" },
-  "gastroscopy-scheduled": { code: "gastroscopy-scheduled", label: "위내시경 검사 예정" },
-  "colonoscopy-scheduled": { code: "colonoscopy-scheduled", label: "대장내시경 검사 예정" },
-  "surgery-scheduled": { code: "surgery-scheduled", label: "수술 예정" },
+  "before-test": { code: "before-test", label: "검사 전" },
+  "before-surgery": { code: "before-surgery", label: "수술 전" },
   admitted: { code: "admitted", label: "입원 중" },
-  "blood-test-scheduled": { code: "blood-test-scheduled", label: "채혈 예정" },
-  "discharge-scheduled": { code: "discharge-scheduled", label: "퇴원 예정" },
+  "before-discharge": { code: "before-discharge", label: "퇴원 전후" },
+  "after-discharge": { code: "after-discharge", label: "퇴원 후" },
 };
 
-export type GuideCategory = "검사" | "수술" | "입원" | "퇴원" | "복약" | "생활안내";
+export type GuideCategory = "검사" | "수술" | "입원" | "퇴원" | "기타";
 
 export interface FaqItem {
   question: string;
@@ -43,61 +47,58 @@ export interface FaqItem {
 /** 환자 안내 콘텐츠 표준 템플릿 (필요한 섹션만 채워서 사용) */
 export interface GuideContent {
   contentId: string;
+  /** 콘텐츠 고정 URL(/c/[slug])에 쓰이는 값. 개인정보를 포함하지 않습니다. */
+  slug: string;
   title: string;
   category: GuideCategory;
+  subcategory: string;
   departments: Department[];
-  /** 이 콘텐츠가 매칭되는 환자 여정 단계 */
+  /** 환자 여정 단계 필터 태그 (Phase 1: 자동 추천에는 미사용) */
   patientStages: StageCode[];
-  /** 추천 이유로 노출되는 짧은 문구 */
-  recommendReason: string;
   /** 2. 한눈에 보는 안내 */
   summary: string;
   /** 3. 꼭 확인해주세요 */
-  mustCheck?: string;
-  /** 4. 검사/치료 전 */
-  beforeCare?: string;
-  /** 5. 검사/치료 당일 */
-  dayOfCare?: string;
-  /** 6. 검사/치료 후 */
-  afterCare?: string;
-  /** 7. 주의사항 */
-  precautions?: string;
-  /** 8. FAQ */
+  importantNotice?: string;
+  /** 4. 검사·치료 전 */
+  before?: string;
+  /** 5. 검사·치료 당일 */
+  during?: string;
+  /** 6. 검사·치료 후 */
+  after?: string;
+  /** 7. FAQ */
   faq?: FaqItem[];
-  /** 10. 위치 */
+  /** 8. 위치 */
   location?: string;
-  /** 11. 문의 */
+  /** 9. 문의 */
   contact?: string;
-  /** 12. 관련 안내 */
+  /** 10. 관련 안내 */
   relatedContentIds?: string[];
-  readMinutes: number;
+  estimatedReadMinutes: number;
   status: "게시" | "비게시";
   /** 병원 공식 검토가 필요한 프로토타입 콘텐츠 여부 */
   needsClinicalReview: boolean;
   version: number;
-  approvedBy?: string;
-  approvedAt?: string;
+  lastUpdated: string;
 }
 
-export interface Patient {
-  patientId: string;
-  name: string;
-  registrationNumber: string;
-  department: Department;
-  stage: StageCode;
-  scheduledAt?: string;
-}
+export type DeliveryChannel = "sms" | "qr" | "kakao";
 
-export type DeliveryChannel = "kakao" | "sms" | "qr";
+export const CHANNEL_LABEL: Record<DeliveryChannel, string> = {
+  sms: "SMS",
+  qr: "QR",
+  kakao: "카카오 알림톡",
+};
 
-export interface SentRecord {
-  recordId: string;
-  token: string;
-  patientId: string;
-  patientName: string;
-  contentIds: string[];
+/**
+ * 환자 식별정보를 전혀 포함하지 않는 발송 준비 이력입니다.
+ * "언제 누가 어떤 콘텐츠를 어떤 채널로 준비했는지"만 기록합니다.
+ */
+export interface SendLogEntry {
+  logId: string;
+  contentId: string;
+  contentTitle: string;
   channel: DeliveryChannel;
-  sentAt: string;
-  sentBy: string;
-  readAt?: string;
+  action: "copied" | "qr_generated";
+  performedAt: string;
+  performedBy: string;
 }

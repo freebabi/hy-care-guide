@@ -10,8 +10,7 @@ const notoSansKR = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   title: "한양 케어가이드(HY Care Guide)",
-  description:
-    "환자의 진료 단계에 맞는 안내를 추천하고, 의료진이 선택해 환자에게 전달하는 환자 여정 기반 안내 서비스입니다.",
+  description: "필요한 환자 안내 콘텐츠를 빠르게 찾아 SMS·QR·카카오 알림톡으로 전달하는 서비스입니다.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

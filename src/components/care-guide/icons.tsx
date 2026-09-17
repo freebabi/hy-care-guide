@@ -236,13 +236,22 @@ export function UserIcon(props: IconProps) {
   );
 }
 
+export function InfoIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-5 w-5" aria-hidden="true" {...props}>
+      <circle cx="12" cy="12" r="8.25" />
+      <path strokeLinecap="round" d="M12 11v5.5" />
+      <circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 const CATEGORY_ICON: Record<GuideCategory, (props: IconProps) => React.JSX.Element> = {
   검사: StethoscopeIcon,
   수술: HeartPulseIcon,
   입원: BedIcon,
   퇴원: HomeIcon,
-  복약: PillIcon,
-  생활안내: LightbulbIcon,
+  기타: InfoIcon,
 };
 
 export function CategoryIcon({ category, ...props }: IconProps & { category: GuideCategory }) {

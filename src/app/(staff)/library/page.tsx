@@ -7,7 +7,7 @@ import { SearchIcon } from "@/components/care-guide/icons";
 import { useGuides } from "@/lib/care-guide/use-guides";
 import type { GuideCategory } from "@/lib/care-guide/types";
 
-const CATEGORIES: Array<GuideCategory | "전체"> = ["전체", "검사", "수술", "입원", "퇴원", "복약", "생활안내"];
+const CATEGORIES: Array<GuideCategory | "전체"> = ["전체", "검사", "수술", "입원", "퇴원", "기타"];
 
 export default function LibraryPage() {
   const { guides } = useGuides();
@@ -39,7 +39,7 @@ export default function LibraryPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-xl font-extrabold text-slate-900">환자 안내 콘텐츠</h1>
-        <p className="mt-1 text-sm text-slate-500">검사, 수술, 입원, 복약 등 상황별 안내를 검색해보세요.</p>
+        <p className="mt-1 text-sm text-slate-500">검사, 수술, 입원, 퇴원 등 상황별 안내를 검색해보세요.</p>
       </div>
 
       <div className="flex flex-col gap-3">

@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChartIcon, HistoryIcon, MenuIcon, CloseIcon, DocumentPlusIcon, SettingsIcon } from "../icons";
 import { useState } from "react";
+import { ChartIcon, HistoryIcon, MenuIcon, CloseIcon, DocumentPlusIcon } from "../icons";
 
 const NAV_ITEMS = [
   { href: "/", label: "환자 안내" },
@@ -51,13 +51,6 @@ export default function StaffNav() {
               </Link>
             );
           })}
-          <Link
-            href="/settings"
-            aria-label="설정"
-            className="ml-1 rounded-lg p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-          >
-            <SettingsIcon />
-          </Link>
         </nav>
 
         <button
@@ -73,7 +66,7 @@ export default function StaffNav() {
 
       {open && (
         <nav className="border-t border-slate-200 bg-white px-4 pb-3 md:hidden">
-          {[...NAV_ITEMS, { href: "/settings", label: "설정" }].map((item) => (
+          {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}

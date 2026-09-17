@@ -1,25 +1,13 @@
 "use client";
 
-import { getHistory, CHANNEL_LABEL } from "@/lib/care-guide/notification-service";
+import { getSendLog } from "@/lib/care-guide/notification-service";
 import { useClientValue } from "@/lib/care-guide/use-client-value";
-import type { DeliveryChannel } from "@/lib/care-guide/types";
-
-function summarizeHistory() {
-  const history = getHistory();
-  return {
-    sessionSentCount: history.length,
-    channelCounts: {
-      kakao: history.filter((r) => r.channel === "kakao").length,
-      sms: history.filter((r) => r.channel === "sms").length,
-      qr: history.filter((r) => r.channel === "qr").length,
-    } satisfies Record<DeliveryChannel, number>,
-  };
-}
+import { CHANNEL_LABEL, type DeliveryChannel } from "@/lib/care-guide/types";
 
 const MOCK_KPI = [
-  { label: "최근 30일 안내 발송 건수", value: "1,284건" },
-  { label: "평균 열람률", value: "82%" },
-  { label: "안내 재조회율", value: "34%" },
+  { label: "최근 30일 안내 준비 건수", value: "1,284건" },
+  { label: "콘텐츠 링크 클릭률", value: "82%" },
+  { label: "링크 재방문율", value: "34%" },
 ];
 
 const MOCK_TOP_CONTENT: { title: string; views: number }[] = [
@@ -54,10 +42,22 @@ function BarRow({ label, value, max }: { label: string; value: number; max: numb
   );
 }
 
+function summarizeLog() {
+  const log = getSendLog();
+  return {
+    sessionCount: log.length,
+    channelCounts: {
+      sms: log.filter((r) => r.channel === "sms").length,
+      qr: log.filter((r) => r.channel === "qr").length,
+      kakao: log.filter((r) => r.channel === "kakao").length,
+    } satisfies Record<DeliveryChannel, number>,
+  };
+}
+
 export default function DashboardPage() {
-  const { sessionSentCount, channelCounts } = useClientValue(summarizeHistory, {
-    sessionSentCount: 0,
-    channelCounts: { kakao: 0, sms: 0, qr: 0 } satisfies Record<DeliveryChannel, number>,
+  const { sessionCount, channelCounts } = useClientValue(summarizeLog, {
+    sessionCount: 0,
+    channelCounts: { sms: 0, qr: 0, kakao: 0 } satisfies Record<DeliveryChannel, number>,
   });
 
   const maxViews = Math.max(...MOCK_TOP_CONTENT.map((c) => c.views));
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-xl font-extrabold text-slate-900">통계</h1>
         <p className="mt-1 text-sm text-slate-500">
-          안내 발송·열람 현황입니다. 아래 지표는 프로토타입 예시 데이터입니다.
+          안내 콘텐츠 준비·클릭 현황입니다. 아래 지표는 프로토타입 예시 데이터입니다.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="text-sm font-bold text-slate-800">콘텐츠별 열람 순위 (예시)</h2>
+          <h2 className="text-sm font-bold text-slate-800">콘텐츠별 클릭 순위 (예시)</h2>
           <div className="mt-4 flex flex-col gap-3">
             {MOCK_TOP_CONTENT.map((item) => (
               <BarRow key={item.title} label={item.title} value={item.views} max={maxViews} />
@@ -89,9 +89,9 @@ export default function DashboardPage() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="text-sm font-bold text-slate-800">채널별 발송 (이번 세션)</h2>
+          <h2 className="text-sm font-bold text-slate-800">채널별 준비 건수 (이번 세션)</h2>
           <p className="mt-1 text-xs text-slate-400">
-            이번 브라우저 세션에서 실제로 보낸 안내 {sessionSentCount}건 기준입니다.
+            이번 브라우저 세션에서 실제로 준비한 안내 {sessionCount}건 기준입니다.
           </p>
           <div className="mt-4 flex flex-col gap-3">
             {(Object.keys(CHANNEL_LABEL) as DeliveryChannel[]).map((c) => (

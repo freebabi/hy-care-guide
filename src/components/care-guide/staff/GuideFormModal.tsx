@@ -5,9 +5,30 @@ import type { Department, GuideCategory, GuideContent, StageCode } from "@/lib/c
 import { STAGES } from "@/lib/care-guide/types";
 import Modal from "../modals/Modal";
 
-const CATEGORIES: GuideCategory[] = ["검사", "수술", "입원", "퇴원", "복약", "생활안내"];
-const DEPARTMENTS: Department[] = ["영상의학과", "소화기내과", "외과", "정형외과", "내과", "순환기내과"];
+const CATEGORIES: GuideCategory[] = ["검사", "수술", "입원", "퇴원", "기타"];
+const DEPARTMENTS: Department[] = [
+  "영상의학과",
+  "소화기내과",
+  "외과",
+  "정형외과",
+  "내과",
+  "순환기내과",
+  "진단검사의학과",
+  "핵의학과",
+  "마취통증의학과",
+  "재활의학과",
+  "원무팀",
+  "전과공통",
+];
 const STAGE_LIST = Object.values(STAGES);
+
+function slugify(title: string): string {
+  return title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -35,16 +56,18 @@ export default function GuideFormModal({
   const [form, setForm] = useState<GuideContent>(
     initialGuide ?? {
       contentId: nextId,
+      slug: "",
       title: "",
-      category: "생활안내",
+      category: "기타",
+      subcategory: "",
       departments: [],
       patientStages: [],
-      recommendReason: "",
       summary: "",
-      readMinutes: 2,
+      estimatedReadMinutes: 2,
       status: "비게시",
       needsClinicalReview: true,
       version: 1,
+      lastUpdated: new Date().toISOString().slice(0, 10),
     },
   );
 
@@ -61,7 +84,9 @@ export default function GuideFormModal({
     if (!form.title.trim() || !form.summary.trim()) return;
     onSave({
       ...form,
+      slug: form.slug.trim() || slugify(form.title),
       version: initialGuide ? form.version + 1 : 1,
+      lastUpdated: new Date().toISOString().slice(0, 10),
     });
   }
 
@@ -95,16 +120,24 @@ export default function GuideFormModal({
               ))}
             </select>
           </Field>
-          <Field label="예상 읽기 시간(분)">
+          <Field label="세부 분류(subcategory)">
             <input
-              type="number"
-              min={1}
-              value={form.readMinutes}
-              onChange={(e) => setForm({ ...form, readMinutes: Number(e.target.value) })}
+              value={form.subcategory}
+              onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
+              placeholder="예: CT"
               className={inputClass}
             />
           </Field>
         </div>
+
+        <Field label="콘텐츠 URL(/c/[slug]) — 비워두면 제목에서 자동 생성">
+          <input
+            value={form.slug}
+            onChange={(e) => setForm({ ...form, slug: e.target.value })}
+            placeholder="예: ct-prep"
+            className={inputClass}
+          />
+        </Field>
 
         <Field label="진료과 (복수 선택 가능)">
           <div className="flex flex-wrap gap-1.5">
@@ -125,7 +158,7 @@ export default function GuideFormModal({
           </div>
         </Field>
 
-        <Field label="대상 환자 여정 단계 (복수 선택 가능)">
+        <Field label="대상 환자 여정 단계 (복수 선택 가능, 필터용)">
           <div className="flex flex-wrap gap-1.5">
             {STAGE_LIST.map((s) => (
               <button
@@ -144,14 +177,17 @@ export default function GuideFormModal({
           </div>
         </Field>
 
-        <Field label="추천 이유 문구">
-          <input
-            value={form.recommendReason}
-            onChange={(e) => setForm({ ...form, recommendReason: e.target.value })}
-            placeholder="예: CT 검사 예정"
-            className={inputClass}
-          />
-        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="예상 읽기 시간(분)">
+            <input
+              type="number"
+              min={1}
+              value={form.estimatedReadMinutes}
+              onChange={(e) => setForm({ ...form, estimatedReadMinutes: Number(e.target.value) })}
+              className={inputClass}
+            />
+          </Field>
+        </div>
 
         <Field label="한눈에 보는 안내(요약)">
           <textarea
@@ -166,8 +202,8 @@ export default function GuideFormModal({
         <Field label="꼭 확인해주세요">
           <textarea
             rows={2}
-            value={form.mustCheck ?? ""}
-            onChange={(e) => setForm({ ...form, mustCheck: e.target.value || undefined })}
+            value={form.importantNotice ?? ""}
+            onChange={(e) => setForm({ ...form, importantNotice: e.target.value || undefined })}
             className={inputClass}
           />
         </Field>

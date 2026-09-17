@@ -56,6 +56,7 @@ export default function CmsPage() {
             <tr>
               <th className="px-4 py-3">제목</th>
               <th className="px-4 py-3">카테고리</th>
+              <th className="px-4 py-3">URL</th>
               <th className="px-4 py-3">버전</th>
               <th className="px-4 py-3">상태</th>
               <th className="px-4 py-3 text-right">관리</th>
@@ -71,6 +72,7 @@ export default function CmsPage() {
                     {g.category}
                   </span>
                 </td>
+                <td className="px-4 py-3 font-mono text-xs text-slate-400">/c/{g.slug}</td>
                 <td className="px-4 py-3 text-slate-400">v{g.version}</td>
                 <td className="px-4 py-3">
                   <button
@@ -109,7 +111,12 @@ export default function CmsPage() {
       </div>
 
       {previewGuide && (
-        <GuidePreviewModal guide={previewGuide} allGuides={guides} onClose={() => setPreviewId(null)} />
+        <GuidePreviewModal
+          guide={previewGuide}
+          allGuides={guides}
+          onClose={() => setPreviewId(null)}
+          showSendAction={false}
+        />
       )}
 
       {editingGuide && (

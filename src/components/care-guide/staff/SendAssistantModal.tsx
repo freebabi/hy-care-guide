@@ -1,0 +1,189 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import QRCode from "qrcode";
+import type { DeliveryChannel, GuideContent } from "@/lib/care-guide/types";
+import { CHANNEL_LABEL } from "@/lib/care-guide/types";
+import {
+  buildContentUrl,
+  buildKakaoMessage,
+  buildSmsMessage,
+  recordSendPrep,
+} from "@/lib/care-guide/notification-service";
+import { ChatIcon, PhoneIcon, QrIcon, SendCheckIcon } from "../icons";
+import Modal from "../modals/Modal";
+
+const CHANNEL_ICON: Record<DeliveryChannel, (props: { className?: string }) => React.JSX.Element> = {
+  sms: PhoneIcon,
+  qr: QrIcon,
+  kakao: ChatIcon,
+};
+
+function CopyButton({ label, text, onCopied }: { label: string; text: string; onCopied: () => void }) {
+  async function handleClick() {
+    try {
+      await navigator.clipboard.writeText(text);
+      onCopied();
+    } catch {
+      onCopied();
+    }
+  }
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className="rounded-full border border-slate-300 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue"
+    >
+      {label}
+    </button>
+  );
+}
+
+export default function SendAssistantModal({
+  guide,
+  onClose,
+}: {
+  guide: GuideContent;
+  onClose: () => void;
+}) {
+  const [channel, setChannel] = useState<DeliveryChannel>("sms");
+  const [toast, setToast] = useState<string | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  const link = buildContentUrl(guide.slug);
+  const sms = buildSmsMessage(guide);
+  const kakao = buildKakaoMessage(guide);
+  const kakaoText = `${kakao.title}\n\n${kakao.body}\n\n${kakao.link}\n\n[${kakao.buttonLabel}]`;
+
+  useEffect(() => {
+    if (channel !== "qr") return;
+    let cancelled = false;
+    QRCode.toDataURL(link, { width: 176, margin: 1, color: { dark: "#003366" } })
+      .then((url) => {
+        if (!cancelled) setQrDataUrl(url);
+      })
+      .catch(() => setQrDataUrl(null));
+    return () => {
+      cancelled = true;
+    };
+  }, [channel, link]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 2000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  function notifyCopied(message: string) {
+    setToast(message);
+    recordSendPrep(guide, channel, "copied");
+  }
+
+  return (
+    <Modal onClose={onClose} ariaLabel="환자에게 안내하기" maxWidthClassName="sm:max-w-md">
+      <div className="p-6">
+        <h2 className="text-lg font-extrabold text-slate-900">환자에게 안내하기</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          선택 콘텐츠: <span className="font-semibold text-slate-800">{guide.title}</span>
+        </p>
+        <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-500">
+          환자 정보는 병원 기존 시스템에서 확인해주세요. HY CARE GUIDE는 전달할 안내문과 링크만
+          제공합니다.
+        </p>
+
+        <p className="mb-2 mt-5 text-sm font-bold text-slate-800">전달 방법을 선택하세요</p>
+        <div className="flex gap-2">
+          {(Object.keys(CHANNEL_LABEL) as DeliveryChannel[]).map((c) => {
+            const Icon = CHANNEL_ICON[c];
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setChannel(c)}
+                aria-pressed={channel === c}
+                className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 transition ${
+                  channel === c
+                    ? "border-brand-blue bg-cyan-50/60 ring-1 ring-brand-blue/30"
+                    : "border-slate-200 hover:border-slate-300"
+                }`}
+              >
+                <Icon className="h-5 w-5 text-slate-500" />
+                <span className="text-xs font-bold text-slate-700">{CHANNEL_LABEL[c]}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {channel === "sms" && (
+          <div className="mt-5">
+            <p className="mb-1.5 text-xs font-bold text-slate-600">SMS 발송용 문구</p>
+            <pre className="whitespace-pre-wrap rounded-xl bg-slate-50 p-3.5 font-sans text-sm leading-relaxed text-slate-700">
+              {sms.full}
+            </pre>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <CopyButton label="문구 복사" text={sms.messageOnly} onCopied={() => notifyCopied("문구가 복사되었습니다.")} />
+              <CopyButton label="링크만 복사" text={sms.link} onCopied={() => notifyCopied("링크가 복사되었습니다.")} />
+              <CopyButton label="전체 내용 복사" text={sms.full} onCopied={() => notifyCopied("전체 내용이 복사되었습니다.")} />
+            </div>
+          </div>
+        )}
+
+        {channel === "qr" && (
+          <div className="mt-5 flex flex-col items-center gap-3 rounded-xl bg-slate-50 p-5">
+            <p className="text-sm font-bold text-slate-800">{guide.title}</p>
+            <p className="text-xs text-slate-500">휴대폰 카메라로 QR을 촬영해주세요.</p>
+            {qrDataUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={qrDataUrl}
+                alt={`${guide.title} 안내 페이지 QR 코드`}
+                width={176}
+                height={176}
+                onLoad={() => recordSendPrep(guide, "qr", "qr_generated")}
+              />
+            ) : (
+              <div className="h-44 w-44 animate-pulse rounded-lg bg-slate-200" />
+            )}
+            <p className="break-all text-center text-xs text-slate-400">{link}</p>
+            <CopyButton label="링크 복사" text={link} onCopied={() => notifyCopied("링크가 복사되었습니다.")} />
+          </div>
+        )}
+
+        {channel === "kakao" && (
+          <div className="mt-5">
+            <p className="mb-1.5 text-xs font-bold text-slate-600">카카오 알림톡 발송 준비</p>
+            <div className="rounded-xl border border-[#fee500]/60 bg-[#fffbe6] p-3.5">
+              <p className="text-sm font-bold text-slate-900">{kakao.title}</p>
+              <p className="mt-1.5 text-sm text-slate-700">{kakao.body}</p>
+              <p className="mt-1.5 break-all text-xs text-brand-blue">{kakao.link}</p>
+              <span className="mt-2 inline-block rounded-md bg-[#fee500] px-3 py-1.5 text-xs font-bold text-slate-900">
+                {kakao.buttonLabel}
+              </span>
+            </div>
+            <p className="mt-2.5 text-xs leading-relaxed text-slate-400">
+              현재는 실제 카카오 API가 연동되어 있지 않습니다. 병원의 비즈메시지 시스템 또는 향후
+              승인된 API 연동을 전제로 합니다.
+            </p>
+            <div className="mt-3">
+              <CopyButton label="내용 복사" text={kakaoText} onCopied={() => notifyCopied("내용이 복사되었습니다.")} />
+            </div>
+          </div>
+        )}
+
+        <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-relaxed text-slate-400">
+          환자 선택 및 전화번호 입력은 병원 기존 EHR에서 진행합니다.
+        </p>
+      </div>
+
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="animate-toast-in pointer-events-none absolute inset-x-6 bottom-5 flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-3 text-center text-xs font-semibold text-white shadow-lg"
+        >
+          <SendCheckIcon className="h-3.5 w-3.5" /> {toast}
+        </div>
+      )}
+    </Modal>
+  );
+}

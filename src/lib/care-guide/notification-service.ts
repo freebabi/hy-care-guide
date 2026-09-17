@@ -1,66 +1,92 @@
 import { readStorage, writeStorage } from "./storage";
-import type { DeliveryChannel, Patient, SentRecord } from "./types";
+import type { DeliveryChannel, GuideContent, SendLogEntry } from "./types";
 
-const STORAGE_KEY = "hycg.history.v1";
+const STORAGE_KEY = "hycg.sendlog.v1";
+const HOSPITAL_NAME = "한양대학교병원";
+const SITE_ORIGIN = "https://guide.hanyang.ac.kr";
 
 /**
- * 실제 카카오 알림톡/SMS API는 연동하지 않은 Mock 발송 서비스입니다.
- * 발송 "성공"을 흉내내고, 환자가 열어볼 모바일 웹 링크(token)를 생성해
- * 로컬 저장소에 이력으로 남깁니다.
+ * Phase 1에서는 실제 SMS/카카오 API를 연동하지 않습니다. 이 모듈은
+ * "발송에 필요한 문구/링크를 만드는 것"까지만 담당하고, 실제 전송은
+ * 병원의 기존 EHR(SMS)·향후 승인될 카카오 비즈메시지 API가 수행합니다.
  *
- * 실 서비스 전환 시 이 모듈은 백엔드의 알림톡/SMS 발송 API 호출과
- * 보안 토큰 발급(만료시간 포함)으로 교체되어야 합니다.
+ * Phase 2에서 실제 발송 API를 연동할 때는 이 파일의 build*Message
+ * 함수는 그대로 두고, "발송 실행" 함수만 추가하면 되도록 메시지 생성과
+ * 실행을 분리해두었습니다.
  */
-function generateToken(): string {
-  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+
+export function buildContentUrl(slug: string): string {
+  return `${SITE_ORIGIN}/c/${slug}`;
 }
 
-export function getHistory(): SentRecord[] {
-  return readStorage<SentRecord[]>(STORAGE_KEY, []);
+/** 한글 받침 유무에 따라 "을"/"를" 조사를 골라줍니다. */
+function eulOrReul(word: string): "을" | "를" {
+  const lastChar = word.trim().slice(-1);
+  const code = lastChar.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return "를";
+  return (code - 0xac00) % 28 === 0 ? "를" : "을";
 }
 
-function saveHistory(records: SentRecord[]): void {
-  writeStorage(STORAGE_KEY, records);
+export interface SmsMessageParts {
+  messageOnly: string;
+  link: string;
+  full: string;
 }
 
-export function sendGuidesToPatient(
-  patient: Patient,
-  contentIds: string[],
-  channel: DeliveryChannel,
-  sentBy = "서비스전략팀 담당자",
-): SentRecord {
-  const record: SentRecord = {
-    recordId: `r-${generateToken()}`,
-    token: generateToken(),
-    patientId: patient.patientId,
-    patientName: patient.name,
-    contentIds,
-    channel,
-    sentAt: new Date().toISOString(),
-    sentBy,
+export function buildSmsMessage(guide: GuideContent): SmsMessageParts {
+  const messageOnly = `${HOSPITAL_NAME} ${guide.title}${eulOrReul(guide.title)} 안내드립니다.\n아래 링크에서 확인해주세요.`;
+  const link = buildContentUrl(guide.slug);
+  return { messageOnly, link, full: `${messageOnly}\n\n${link}` };
+}
+
+export interface KakaoMessagePreview {
+  title: string;
+  body: string;
+  link: string;
+  buttonLabel: string;
+}
+
+export function buildKakaoMessage(guide: GuideContent): KakaoMessagePreview {
+  return {
+    title: `[${HOSPITAL_NAME}] ${guide.title}`,
+    body: guide.summary,
+    link: buildContentUrl(guide.slug),
+    buttonLabel: "안내 확인하기",
   };
-  const history = getHistory();
-  saveHistory([record, ...history]);
-  return record;
 }
 
-export function getRecordByToken(token: string): SentRecord | undefined {
-  return getHistory().find((r) => r.token === token);
+export function buildKakaoMessageText(guide: GuideContent): string {
+  const m = buildKakaoMessage(guide);
+  return `${m.title}\n\n${m.body}\n\n${m.link}\n\n[${m.buttonLabel}]`;
 }
 
-export function getHistoryForPatient(patientId: string): SentRecord[] {
-  return getHistory()
-    .filter((r) => r.patientId === patientId)
-    .sort((a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime());
+function generateLogId(): string {
+  return `log-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 }
 
-export function buildPatientLink(token: string): string {
-  if (typeof window === "undefined") return `/g/${token}`;
-  return `${window.location.origin}/g/${token}`;
+export function getSendLog(): SendLogEntry[] {
+  return readStorage<SendLogEntry[]>(STORAGE_KEY, []);
 }
 
-export const CHANNEL_LABEL: Record<DeliveryChannel, string> = {
-  kakao: "카카오 알림톡",
-  sms: "문자(SMS)",
-  qr: "QR 코드",
-};
+function saveSendLog(entries: SendLogEntry[]): void {
+  writeStorage(STORAGE_KEY, entries);
+}
+
+export function recordSendPrep(
+  guide: GuideContent,
+  channel: DeliveryChannel,
+  action: SendLogEntry["action"],
+  performedBy = "서비스전략팀 담당자",
+): SendLogEntry {
+  const entry: SendLogEntry = {
+    logId: generateLogId(),
+    contentId: guide.contentId,
+    contentTitle: guide.title,
+    channel,
+    action,
+    performedAt: new Date().toISOString(),
+    performedBy,
+  };
+  saveSendLog([entry, ...getSendLog()]);
+  return entry;
+}
