@@ -1,8 +1,11 @@
 "use client";
 
 import { getSendLog } from "@/lib/care-guide/notification-service";
+import { loadGuides } from "@/lib/care-guide/cms-store";
 import { useClientValue } from "@/lib/care-guide/use-client-value";
-import { CHANNEL_LABEL, type DeliveryChannel } from "@/lib/care-guide/types";
+import { CHANNEL_LABEL, type DeliveryChannel, type GuideCategory } from "@/lib/care-guide/types";
+
+const CATEGORIES: GuideCategory[] = ["검사", "수술", "입원", "퇴원", "기타"];
 
 const MOCK_KPI = [
   { label: "최근 30일 안내 준비 건수", value: "1,284건" },
@@ -44,31 +47,44 @@ function BarRow({ label, value, max }: { label: string; value: number; max: numb
 
 function summarizeLog() {
   const log = getSendLog();
-  return {
-    sessionCount: log.length,
-    channelCounts: {
-      sms: log.filter((r) => r.channel === "sms").length,
-      qr: log.filter((r) => r.channel === "qr").length,
-      kakao: log.filter((r) => r.channel === "kakao").length,
-    } satisfies Record<DeliveryChannel, number>,
-  };
+  const guides = loadGuides();
+
+  const channelCounts = {
+    sms: log.filter((r) => r.channel === "sms").length,
+    qr: log.filter((r) => r.channel === "qr").length,
+    kakao: log.filter((r) => r.channel === "kakao").length,
+  } satisfies Record<DeliveryChannel, number>;
+
+  const categoryCounts = CATEGORIES.reduce(
+    (acc, category) => {
+      const idsInCategory = new Set(guides.filter((g) => g.category === category).map((g) => g.contentId));
+      acc[category] = log.filter((r) => idsInCategory.has(r.contentId)).length;
+      return acc;
+    },
+    {} as Record<GuideCategory, number>,
+  );
+
+  return { sessionCount: log.length, channelCounts, categoryCounts };
 }
 
 export default function DashboardPage() {
-  const { sessionCount, channelCounts } = useClientValue(summarizeLog, {
+  const { sessionCount, channelCounts, categoryCounts } = useClientValue(summarizeLog, {
     sessionCount: 0,
     channelCounts: { sms: 0, qr: 0, kakao: 0 } satisfies Record<DeliveryChannel, number>,
+    categoryCounts: { 검사: 0, 수술: 0, 입원: 0, 퇴원: 0, 기타: 0 } satisfies Record<GuideCategory, number>,
   });
 
   const maxViews = Math.max(...MOCK_TOP_CONTENT.map((c) => c.views));
   const maxChannel = Math.max(1, ...Object.values(channelCounts));
+  const maxCategory = Math.max(1, ...Object.values(categoryCounts));
 
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-xl font-extrabold text-slate-900">통계</h1>
         <p className="mt-1 text-sm text-slate-500">
-          안내 콘텐츠 준비·클릭 현황입니다. 아래 지표는 프로토타입 예시 데이터입니다.
+          콘텐츠·카테고리·채널별 집계입니다(환자별 집계 없음). KPI·콘텐츠 순위는 프로토타입 예시
+          데이터이며, 카테고리·채널 집계는 이번 브라우저 세션의 실제 발송 이력 기준입니다.
         </p>
       </div>
 
@@ -89,11 +105,21 @@ export default function DashboardPage() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-5">
+          <h2 className="text-sm font-bold text-slate-800">카테고리별 준비 건수 (이번 세션)</h2>
+          <p className="mt-1 text-xs text-slate-400">검사/수술/입원/퇴원/기타 콘텐츠 기준입니다.</p>
+          <div className="mt-4 flex flex-col gap-3">
+            {CATEGORIES.map((c) => (
+              <BarRow key={c} label={c} value={categoryCounts[c]} max={maxCategory} />
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-5 lg:col-span-2">
           <h2 className="text-sm font-bold text-slate-800">채널별 준비 건수 (이번 세션)</h2>
           <p className="mt-1 text-xs text-slate-400">
             이번 브라우저 세션에서 실제로 준비한 안내 {sessionCount}건 기준입니다.
           </p>
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
             {(Object.keys(CHANNEL_LABEL) as DeliveryChannel[]).map((c) => (
               <BarRow key={c} label={CHANNEL_LABEL[c]} value={channelCounts[c]} max={maxChannel} />
             ))}
