@@ -1,9 +1,8 @@
 import { readStorage, writeStorage } from "./storage";
+import { HOSPITAL_NAME, SITE_ORIGIN } from "./constants";
 import type { DeliveryChannel, GuideContent, SendLogEntry } from "./types";
 
 const STORAGE_KEY = "hycg.sendlog.v2";
-const HOSPITAL_NAME = "한양대학교병원";
-const SITE_ORIGIN = "https://guide.hanyang.ac.kr";
 
 /**
  * Phase 1에서는 실제 SMS/카카오 API를 연동하지 않습니다. 이 모듈은

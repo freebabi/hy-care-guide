@@ -14,11 +14,25 @@ const PHASE_LABELS: Record<GuideCategory, { before: string; during: string; afte
   기타: { before: "안내", during: "안내", after: "참고사항" },
 };
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/** "영상의학과 02-000-1234" 같은 문의 문구에서 전화번호만 뽑아 tel: 링크를 만듭니다. */
+function extractPhoneNumber(text: string): string | null {
+  const match = text.match(/(0\d{1,2}-\d{3,4}-\d{4})/);
+  return match ? match[0] : null;
+}
+
+function Section({
+  title,
+  bodyClassName,
+  children,
+}: {
+  title: string;
+  bodyClassName: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <h3 className="text-sm font-bold text-slate-800">{title}</h3>
-      <div className="mt-1.5 text-sm leading-relaxed text-slate-600">{children}</div>
+      <div className={`mt-1.5 leading-relaxed text-slate-600 ${bodyClassName}`}>{children}</div>
     </div>
   );
 }
@@ -35,6 +49,9 @@ export default function GuideDetailView({
   onSelectRelated?: (contentId: string) => void;
 }) {
   const phaseLabels = PHASE_LABELS[guide.category];
+  // 환자용 화면은 고령 환자도 읽기 편하도록 본문 텍스트를 16px(text-base) 이상으로 키웁니다.
+  const bodyTextClass = variant === "patient" ? "text-base" : "text-sm";
+  const phoneNumber = guide.contact ? extractPhoneNumber(guide.contact) : null;
 
   return (
     <div className="flex flex-col gap-5">
@@ -51,7 +68,7 @@ export default function GuideDetailView({
         <h2 className="mt-2 text-xl font-extrabold leading-snug text-slate-900">{guide.title}</h2>
       </div>
 
-      <Section title="한눈에 보는 안내">
+      <Section title="한눈에 보는 안내" bodyClassName={bodyTextClass}>
         <p>{guide.summary}</p>
       </Section>
 
@@ -59,25 +76,37 @@ export default function GuideDetailView({
         <div className="flex gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5">
           <WarningIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
           <div>
-            <p className="text-xs font-bold text-amber-800">꼭 확인해주세요</p>
-            <p className="mt-1 text-sm leading-relaxed text-amber-900">{guide.importantNotice}</p>
+            <p className="text-sm font-bold text-amber-800">꼭 확인해주세요</p>
+            <p className={`mt-1 leading-relaxed text-amber-900 ${bodyTextClass}`}>{guide.importantNotice}</p>
           </div>
         </div>
       )}
 
-      {guide.before && <Section title={phaseLabels.before}>{guide.before}</Section>}
-      {guide.during && <Section title={phaseLabels.during}>{guide.during}</Section>}
-      {guide.after && <Section title={phaseLabels.after}>{guide.after}</Section>}
+      {guide.before && (
+        <Section title={phaseLabels.before} bodyClassName={bodyTextClass}>
+          {guide.before}
+        </Section>
+      )}
+      {guide.during && (
+        <Section title={phaseLabels.during} bodyClassName={bodyTextClass}>
+          {guide.during}
+        </Section>
+      )}
+      {guide.after && (
+        <Section title={phaseLabels.after} bodyClassName={bodyTextClass}>
+          {guide.after}
+        </Section>
+      )}
 
       {guide.faq && guide.faq.length > 0 && (
-        <Section title="자주 묻는 질문">
+        <Section title="자주 묻는 질문" bodyClassName={bodyTextClass}>
           <ul className="flex flex-col gap-2.5">
             {guide.faq.map((item) => (
               <li key={item.question} className="rounded-lg bg-slate-50 px-3.5 py-2.5">
-                <p className="flex gap-1.5 text-sm font-semibold text-slate-800">
+                <p className="flex gap-1.5 font-semibold text-slate-800">
                   <span className="text-brand-teal">Q.</span> {item.question}
                 </p>
-                <p className="mt-1 flex gap-1.5 text-sm text-slate-600">
+                <p className="mt-1 flex gap-1.5 text-slate-600">
                   <span className="text-slate-400">A.</span> {item.answer}
                 </p>
               </li>
@@ -87,7 +116,7 @@ export default function GuideDetailView({
       )}
 
       {(guide.location || guide.contact) && (
-        <div className="flex flex-col gap-1.5 rounded-xl bg-slate-50 px-4 py-3.5 text-sm text-slate-600">
+        <div className={`flex flex-col gap-1.5 rounded-xl bg-slate-50 px-4 py-3.5 text-slate-600 ${bodyTextClass}`}>
           {guide.location && (
             <p className="flex items-center gap-2">
               <PinIcon className="h-4 w-4 shrink-0 text-slate-400" /> {guide.location}
@@ -95,14 +124,21 @@ export default function GuideDetailView({
           )}
           {guide.contact && (
             <p className="flex items-center gap-2">
-              <PhoneIcon className="h-4 w-4 shrink-0 text-slate-400" /> {guide.contact}
+              <PhoneIcon className="h-4 w-4 shrink-0 text-slate-400" />
+              {phoneNumber ? (
+                <a href={`tel:${phoneNumber}`} className="underline underline-offset-2 hover:text-brand-blue">
+                  {guide.contact}
+                </a>
+              ) : (
+                guide.contact
+              )}
             </p>
           )}
         </div>
       )}
 
       {relatedGuides.length > 0 && (
-        <Section title="관련 안내">
+        <Section title="관련 안내" bodyClassName={bodyTextClass}>
           <ul className="flex flex-col gap-1.5">
             {relatedGuides.map((related) => (
               <li key={related.contentId}>
@@ -110,12 +146,12 @@ export default function GuideDetailView({
                   <button
                     type="button"
                     onClick={() => onSelectRelated(related.contentId)}
-                    className="text-left text-sm font-semibold text-brand-blue underline-offset-2 hover:underline"
+                    className="text-left font-semibold text-brand-blue underline-offset-2 hover:underline"
                   >
                     {related.title}
                   </button>
                 ) : (
-                  <span className="text-sm font-semibold text-slate-700">{related.title}</span>
+                  <span className="font-semibold text-slate-700">{related.title}</span>
                 )}
               </li>
             ))}
@@ -133,7 +169,7 @@ export default function GuideDetailView({
           )}
         </div>
       ) : (
-        <p className="border-t border-slate-100 pt-4 text-xs leading-relaxed text-slate-400">
+        <p className={`border-t border-slate-100 pt-4 leading-relaxed text-slate-400 ${bodyTextClass}`}>
           본 안내는 프로토타입 예시이며, 실제 진료 지침과 다를 수 있습니다. 궁금한 점은 위 문의처로
           연락하시거나 담당 의료진에게 확인해주세요.
         </p>
