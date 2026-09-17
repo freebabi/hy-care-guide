@@ -151,7 +151,6 @@ export default function SendAssistantModal({
                 alt={`${guide.title} 안내 페이지 QR 코드`}
                 width={176}
                 height={176}
-                onLoad={() => recordSendPrep(guide, "qr")}
               />
             ) : (
               <div className="h-44 w-44 animate-pulse rounded-lg bg-slate-200" />
