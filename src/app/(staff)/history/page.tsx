@@ -27,8 +27,8 @@ export default function HistoryPage() {
           아직 발송 준비 이력이 없습니다.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-          <table className="w-full text-left text-sm">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+          <table className="w-full min-w-[480px] text-left text-sm">
             <thead className="border-b border-slate-100 bg-slate-50 text-xs font-bold text-slate-500">
               <tr>
                 <th className="px-4 py-3">발송 시각</th>
