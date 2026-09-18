@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { Department, GuideCategory, GuideContent, StageCode } from "@/lib/care-guide/types";
+import type { Department, FaqItem, GuideCategory, GuideContent, StageCode } from "@/lib/care-guide/types";
 import { STAGES } from "@/lib/care-guide/types";
+import { PHASE_LABELS } from "../GuideDetailView";
 import Modal from "../modals/Modal";
 
 const CATEGORIES: GuideCategory[] = ["검사", "수술", "입원", "퇴원", "기타"];
@@ -46,12 +47,14 @@ export default function GuideFormModal({
   initialGuide,
   nextId,
   existingSlugs,
+  otherGuides,
   onClose,
   onSave,
 }: {
   initialGuide: GuideContent | null;
   nextId: string;
   existingSlugs: string[];
+  otherGuides: GuideContent[];
   onClose: () => void;
   onSave: (guide: GuideContent) => void;
 }) {
@@ -81,6 +84,36 @@ export default function GuideFormModal({
       return { ...prev, [key]: next };
     });
   }
+
+  function toggleRelated(contentId: string) {
+    setForm((prev) => {
+      const current = prev.relatedContentIds ?? [];
+      const next = current.includes(contentId)
+        ? current.filter((id) => id !== contentId)
+        : [...current, contentId];
+      return { ...prev, relatedContentIds: next.length > 0 ? next : undefined };
+    });
+  }
+
+  function addFaqItem() {
+    setForm((prev) => ({ ...prev, faq: [...(prev.faq ?? []), { question: "", answer: "" }] }));
+  }
+
+  function updateFaqItem(index: number, patch: Partial<FaqItem>) {
+    setForm((prev) => ({
+      ...prev,
+      faq: (prev.faq ?? []).map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    }));
+  }
+
+  function removeFaqItem(index: number) {
+    setForm((prev) => {
+      const next = (prev.faq ?? []).filter((_, i) => i !== index);
+      return { ...prev, faq: next.length > 0 ? next : undefined };
+    });
+  }
+
+  const phaseLabels = PHASE_LABELS[form.category];
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -227,6 +260,74 @@ export default function GuideFormModal({
           />
         </Field>
 
+        <Field label={phaseLabels.before}>
+          <textarea
+            rows={2}
+            value={form.before ?? ""}
+            onChange={(e) => setForm({ ...form, before: e.target.value || undefined })}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label={phaseLabels.during}>
+          <textarea
+            rows={2}
+            value={form.during ?? ""}
+            onChange={(e) => setForm({ ...form, during: e.target.value || undefined })}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label={phaseLabels.after}>
+          <textarea
+            rows={2}
+            value={form.after ?? ""}
+            onChange={(e) => setForm({ ...form, after: e.target.value || undefined })}
+            className={inputClass}
+          />
+        </Field>
+
+        <div>
+          <div className="mb-1.5 flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-600">자주 묻는 질문</span>
+            <button
+              type="button"
+              onClick={addFaqItem}
+              className="text-xs font-bold text-brand-blue hover:underline"
+            >
+              + 질문 추가
+            </button>
+          </div>
+          <div className="flex flex-col gap-2">
+            {(form.faq ?? []).map((item, index) => (
+              <div key={index} className="flex flex-col gap-1.5 rounded-lg border border-slate-200 p-2.5">
+                <div className="flex gap-1.5">
+                  <input
+                    value={item.question}
+                    onChange={(e) => updateFaqItem(index, { question: e.target.value })}
+                    placeholder="질문"
+                    className={inputClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeFaqItem(index)}
+                    className="shrink-0 rounded-lg border border-slate-300 px-2.5 text-xs font-bold text-slate-500 hover:border-red-300 hover:text-red-600"
+                  >
+                    삭제
+                  </button>
+                </div>
+                <textarea
+                  rows={2}
+                  value={item.answer}
+                  onChange={(e) => updateFaqItem(index, { answer: e.target.value })}
+                  placeholder="답변"
+                  className={inputClass}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="위치">
             <input
@@ -243,6 +344,26 @@ export default function GuideFormModal({
             />
           </Field>
         </div>
+
+        <Field label="관련 안내 (복수 선택 가능)">
+          <div className="max-h-40 overflow-y-auto rounded-lg border border-slate-200 p-2">
+            {otherGuides.length === 0 ? (
+              <p className="px-1 py-1 text-xs text-slate-400">선택할 수 있는 다른 콘텐츠가 없습니다.</p>
+            ) : (
+              otherGuides.map((g) => (
+                <label key={g.contentId} className="flex items-center gap-2 px-1 py-1 text-sm text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={(form.relatedContentIds ?? []).includes(g.contentId)}
+                    onChange={() => toggleRelated(g.contentId)}
+                    className="h-4 w-4 rounded border-slate-300"
+                  />
+                  {g.title}
+                </label>
+              ))
+            )}
+          </div>
+        </Field>
 
         <label className="flex items-center gap-2 text-sm text-slate-600">
           <input

@@ -160,6 +160,7 @@ export default function StaffHomePage() {
           initialGuide={editingGuide}
           nextId={nextContentId(guides)}
           existingSlugs={guides.filter((g) => g.contentId !== editingGuide.contentId).map((g) => g.slug)}
+          otherGuides={guides.filter((g) => g.contentId !== editingGuide.contentId)}
           onClose={() => setEditingGuide(null)}
           onSave={(guide) => {
             upsertGuide(guide);

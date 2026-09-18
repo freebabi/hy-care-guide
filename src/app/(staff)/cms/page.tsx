@@ -126,6 +126,9 @@ export default function CmsPage() {
           existingSlugs={guides
             .filter((g) => editingGuide === "new" || g.contentId !== editingGuide.contentId)
             .map((g) => g.slug)}
+          otherGuides={guides.filter(
+            (g) => editingGuide === "new" || g.contentId !== editingGuide.contentId,
+          )}
           onClose={() => setEditingGuide(null)}
           onSave={(guide) => {
             upsertGuide(guide);

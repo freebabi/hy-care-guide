@@ -6,7 +6,7 @@ import { CategoryIcon, ClockIcon, PhoneIcon, PinIcon, WarningIcon } from "./icon
  * "검사·치료 전/당일/후"로 고정하면 입원·퇴원·기타 콘텐츠에서 어색해집니다.
  * 카테고리별로 자연스러운 라벨을 매핑합니다.
  */
-const PHASE_LABELS: Record<GuideCategory, { before: string; during: string; after: string }> = {
+export const PHASE_LABELS: Record<GuideCategory, { before: string; during: string; after: string }> = {
   검사: { before: "검사 전", during: "검사 당일", after: "검사 후" },
   수술: { before: "수술 전", during: "수술 당일", after: "수술 후" },
   입원: { before: "입원 중 확인사항", during: "입원 중 안내", after: "입원 중 주의사항" },
