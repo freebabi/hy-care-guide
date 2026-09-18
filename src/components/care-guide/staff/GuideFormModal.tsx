@@ -387,11 +387,14 @@ export default function GuideFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-600"
+            className="rounded-full border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:ring-offset-2 active:translate-y-px"
           >
             취소
           </button>
-          <button type="submit" className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-bold text-white">
+          <button
+            type="submit"
+            className="rounded-full bg-brand-blue px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-brand-blue-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px"
+          >
             저장
           </button>
         </div>

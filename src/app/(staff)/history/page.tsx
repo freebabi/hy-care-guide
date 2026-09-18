@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { getSendLog } from "@/lib/care-guide/notification-service";
 import { useClientValue } from "@/lib/care-guide/use-client-value";
 import { CHANNEL_LABEL } from "@/lib/care-guide/types";
-import { SendCheckIcon } from "@/components/care-guide/icons";
+import { HistoryIcon, SendCheckIcon } from "@/components/care-guide/icons";
 
 function formatDateTime(iso: string) {
   const d = new Date(iso);
@@ -23,9 +24,19 @@ export default function HistoryPage() {
       </div>
 
       {records.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-10 text-center text-sm text-slate-500">
-          아직 발송 준비 이력이 없습니다.
-        </p>
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center">
+          <HistoryIcon className="h-6 w-6 text-slate-300" />
+          <div>
+            <p className="text-sm font-semibold text-slate-600">아직 발송한 안내가 없습니다.</p>
+            <p className="mt-1 text-xs text-slate-400">콘텐츠를 선택하여 환자에게 안내를 보내보세요.</p>
+          </div>
+          <Link
+            href="/"
+            className="mt-1 rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-brand-blue transition-colors hover:bg-blue-soft/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2"
+          >
+            환자 안내 콘텐츠 보기
+          </Link>
+        </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
           <table className="w-full min-w-[480px] text-left text-sm">

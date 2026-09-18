@@ -45,7 +45,15 @@ export default function StaffHomePage() {
 
   const previewGuide = previewId ? guides.find((g) => g.contentId === previewId) : null;
 
-  const chipBase = "rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors";
+  function resetFilters() {
+    setQuery("");
+    setCategory("전체");
+    setDepartment("전체");
+    setStage("전체");
+  }
+
+  const chipBase =
+    "rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px";
   const chipInactive =
     "border-slate-200 bg-white text-slate-500 hover:border-brand-blue/30 hover:bg-blue-soft/60 hover:text-brand-blue-dark";
   // 1차 필터(카테고리): 브랜드 블루 solid fill로 가장 강한 위계
@@ -77,7 +85,7 @@ export default function StaffHomePage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="검사, 수술, 입원, 퇴원 등 검색"
-            className="h-[50px] w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-brand-blue focus:ring-[3px] focus:ring-brand-blue/10"
+            className="h-[50px] w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-slate-400 placeholder:transition-colors focus:border-brand-blue focus:ring-[3px] focus:ring-brand-blue/10 focus:placeholder:text-slate-300"
           />
         </label>
 
@@ -99,7 +107,7 @@ export default function StaffHomePage() {
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-500 outline-none transition-colors hover:border-brand-blue/30 focus:border-brand-blue"
+              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-500 outline-none transition-colors hover:border-brand-blue/30 focus-visible:border-brand-blue focus-visible:ring-2 focus-visible:ring-brand-blue/20"
             >
               {departments.map((d) => (
                 <option key={d} value={d}>
@@ -136,11 +144,30 @@ export default function StaffHomePage() {
         <p className="text-xs font-medium text-slate-400">{filtered.length}건의 안내</p>
 
         {filtered.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500">
-            검색 조건에 맞는 안내가 없습니다.
-          </p>
+          <div
+            key={`${category}-${department}-${stage}-${query}`}
+            className="animate-content-swap flex flex-col items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-white px-6 py-14 text-center"
+          >
+            <SearchIcon className="h-6 w-6 text-slate-300" />
+            <div>
+              <p className="text-sm font-semibold text-slate-600">검색 결과가 없습니다.</p>
+              <p className="mt-1 text-xs text-slate-400">
+                검사명, 수술명 또는 안내 내용으로 검색해보세요.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-1 rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-brand-blue transition-colors hover:bg-blue-soft/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px"
+            >
+              전체 콘텐츠 보기
+            </button>
+          </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+          <div
+            key={`${category}-${department}-${stage}-${query}`}
+            className="animate-content-swap grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
+          >
             {filtered.map((guide) => (
               <GuideCard
                 key={guide.contentId}

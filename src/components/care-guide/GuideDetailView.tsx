@@ -126,7 +126,10 @@ export default function GuideDetailView({
             <p className="flex items-center gap-2">
               <PhoneIcon className="h-4 w-4 shrink-0 text-slate-400" />
               {phoneNumber ? (
-                <a href={`tel:${phoneNumber}`} className="underline underline-offset-2 hover:text-brand-blue">
+                <a
+                  href={`tel:${phoneNumber}`}
+                  className="rounded underline underline-offset-2 transition-colors hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+                >
                   {guide.contact}
                 </a>
               ) : (
@@ -146,7 +149,7 @@ export default function GuideDetailView({
                   <button
                     type="button"
                     onClick={() => onSelectRelated(related.contentId)}
-                    className="text-left font-semibold text-brand-blue underline-offset-2 hover:underline"
+                    className="rounded text-left font-semibold text-brand-blue underline-offset-2 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
                   >
                     {related.title}
                   </button>

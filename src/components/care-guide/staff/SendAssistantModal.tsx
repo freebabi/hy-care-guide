@@ -11,7 +11,7 @@ import {
   buildSmsMessage,
   recordSendPrep,
 } from "@/lib/care-guide/notification-service";
-import { ChatIcon, DownloadIcon, PhoneIcon, QrIcon, SendCheckIcon } from "../icons";
+import { ChatIcon, DownloadIcon, PhoneIcon, QrIcon, SendCheckIcon, WarningIcon } from "../icons";
 import Modal from "../modals/Modal";
 
 const CHANNEL_ICON: Record<DeliveryChannel, (props: { className?: string }) => React.JSX.Element> = {
@@ -43,7 +43,7 @@ function CopyButton({
     <button
       type="button"
       onClick={handleClick}
-      className="rounded-full border border-slate-300 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue"
+      className="rounded-full border border-slate-300 px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px"
     >
       {label}
     </button>
@@ -58,7 +58,7 @@ export default function SendAssistantModal({
   onClose: () => void;
 }) {
   const [channel, setChannel] = useState<DeliveryChannel>("sms");
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   const link = buildContentUrl(guide.slug);
@@ -86,12 +86,15 @@ export default function SendAssistantModal({
   }, [toast]);
 
   function notifyCopied(message: string) {
-    setToast(message);
+    setToast({ message: `✓ ${message}`, variant: "success" });
     recordSendPrep(guide, channel);
   }
 
   function notifyCopyFailed() {
-    setToast("복사에 실패했습니다. 화면에 표시된 내용을 직접 선택해 복사해주세요.");
+    setToast({
+      message: "복사에 실패했습니다. 화면에 표시된 내용을 직접 선택해 복사해주세요.",
+      variant: "error",
+    });
   }
 
   function handleDownloadQr() {
@@ -102,7 +105,7 @@ export default function SendAssistantModal({
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setToast("QR 이미지가 다운로드되었습니다.");
+    setToast({ message: "✓ QR 이미지가 다운로드되었습니다.", variant: "success" });
     recordSendPrep(guide, "qr");
   }
 
@@ -128,10 +131,10 @@ export default function SendAssistantModal({
                 type="button"
                 onClick={() => setChannel(c)}
                 aria-pressed={channel === c}
-                className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 transition ${
+                className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px ${
                   channel === c
-                    ? "border-brand-blue bg-cyan-50/60 ring-1 ring-brand-blue/30"
-                    : "border-slate-200 hover:border-slate-300"
+                    ? "border-brand-blue bg-blue-soft ring-1 ring-brand-blue/30"
+                    : "border-slate-200 hover:border-brand-blue/30 hover:bg-blue-soft/40"
                 }`}
               >
                 <Icon className="h-5 w-5 text-slate-500" />
@@ -197,7 +200,7 @@ export default function SendAssistantModal({
                 type="button"
                 onClick={handleDownloadQr}
                 disabled={!qrDataUrl}
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:active:translate-y-0"
               >
                 <DownloadIcon className="h-3.5 w-3.5" /> QR 이미지 다운로드
               </button>
@@ -240,9 +243,16 @@ export default function SendAssistantModal({
         <div
           role="status"
           aria-live="polite"
-          className="animate-toast-in pointer-events-none absolute inset-x-6 bottom-5 flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-3 text-center text-xs font-semibold text-white shadow-lg"
+          className={`animate-toast-in pointer-events-none absolute inset-x-6 bottom-5 flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-center text-xs font-semibold text-white shadow-lg ${
+            toast.variant === "success" ? "bg-brand-blue-dark" : "bg-amber-600"
+          }`}
         >
-          <SendCheckIcon className="h-3.5 w-3.5" /> {toast}
+          {toast.variant === "success" ? (
+            <SendCheckIcon className="h-3.5 w-3.5" />
+          ) : (
+            <WarningIcon className="h-3.5 w-3.5" />
+          )}
+          {toast.message}
         </div>
       )}
     </Modal>

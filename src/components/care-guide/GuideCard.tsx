@@ -23,7 +23,10 @@ export default function GuideCard({
   onEdit?: () => void;
 }) {
   return (
-    <article className="flex h-full flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-blue/25 hover:shadow-[0_6px_20px_-8px_rgba(14,74,132,0.14)]">
+    <article
+      onClick={onPreview}
+      className="group flex h-full cursor-pointer flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand-blue/25 hover:shadow-[0_6px_20px_-8px_rgba(14,74,132,0.14)]"
+    >
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-1.5">
           <span
@@ -40,23 +43,31 @@ export default function GuideCard({
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5">
-        <h4 className="text-[16px] font-bold leading-snug text-slate-900">{guide.title}</h4>
+        <h4 className="text-[16px] font-bold leading-snug text-slate-900 transition-colors duration-200 group-hover:text-brand-blue-dark">
+          {guide.title}
+        </h4>
         <p className="line-clamp-2 text-[13.5px] leading-relaxed text-slate-500">{guide.summary}</p>
       </div>
 
       <div className="mt-auto flex items-center gap-2 pt-1">
         <button
           type="button"
-          onClick={onPreview}
-          className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-brand-blue transition-colors hover:border-brand-blue/30 hover:bg-blue-soft/70"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPreview();
+          }}
+          className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-brand-blue transition-colors hover:border-brand-blue/30 hover:bg-blue-soft/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-visible:ring-offset-2 active:translate-y-px"
         >
           미리보기
         </button>
         {onEdit && (
           <button
             type="button"
-            onClick={onEdit}
-            className="inline-flex items-center justify-center rounded-lg px-3.5 py-2 text-xs font-semibold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            className="inline-flex items-center justify-center rounded-lg px-3.5 py-2 text-xs font-semibold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:ring-offset-2 active:translate-y-px"
           >
             수정
           </button>
