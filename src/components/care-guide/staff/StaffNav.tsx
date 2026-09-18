@@ -24,12 +24,15 @@ export default function StaffNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex items-center gap-2.5">
           <Image src="/logo.png" alt="한양대학교병원" width={1025} height={1004} className="h-7 w-7 object-contain" />
-          <span className="text-sm font-extrabold text-slate-800">
-            HY CARE GUIDE <span className="font-medium text-slate-400">직원용</span>
+          <span className="flex items-baseline gap-1.5">
+            <span className="text-[15px] font-bold tracking-tight text-slate-900">HY CARE GUIDE</span>
+            <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">
+              직원용
+            </span>
           </span>
         </Link>
 
@@ -41,8 +44,10 @@ export default function StaffNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                  isActive ? "bg-slate-100 text-brand-blue" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm transition-colors ${
+                  isActive
+                    ? "bg-brand-blue/[0.07] font-semibold text-brand-blue"
+                    : "font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                 }`}
               >
                 {Icon && <Icon className="h-4 w-4" />}
@@ -57,7 +62,7 @@ export default function StaffNav() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
-          className="rounded-md p-1.5 text-slate-700 md:hidden"
+          className="rounded-md p-1.5 text-slate-500 md:hidden"
         >
           {open ? <CloseIcon /> : <MenuIcon />}
         </button>
@@ -70,8 +75,8 @@ export default function StaffNav() {
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className={`block rounded-lg px-2 py-2.5 text-sm font-semibold ${
-                pathname === item.href ? "text-brand-blue" : "text-slate-700"
+              className={`block rounded-lg px-2.5 py-2.5 text-sm font-semibold ${
+                pathname === item.href ? "text-brand-blue" : "text-slate-600"
               }`}
             >
               {item.label}
