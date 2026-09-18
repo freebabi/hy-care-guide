@@ -48,9 +48,13 @@ export default function HistoryPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
-                      <SendCheckIcon className="h-3.5 w-3.5" /> {r.completed ? "완료" : "미완료"}
-                    </span>
+                    {r.completed ? (
+                      <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
+                        <SendCheckIcon className="h-3.5 w-3.5" /> 완료
+                      </span>
+                    ) : (
+                      <span className="font-semibold text-slate-400">미완료</span>
+                    )}
                   </td>
                 </tr>
               ))}

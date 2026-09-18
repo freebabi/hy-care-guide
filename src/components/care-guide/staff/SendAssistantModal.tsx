@@ -7,6 +7,7 @@ import { CHANNEL_LABEL } from "@/lib/care-guide/types";
 import {
   buildContentUrl,
   buildKakaoMessage,
+  buildKakaoMessageText,
   buildSmsMessage,
   recordSendPrep,
 } from "@/lib/care-guide/notification-service";
@@ -63,7 +64,7 @@ export default function SendAssistantModal({
   const link = buildContentUrl(guide.slug);
   const sms = buildSmsMessage(guide);
   const kakao = buildKakaoMessage(guide);
-  const kakaoText = `${kakao.title}\n\n${kakao.body}\n\n${kakao.link}\n\n[${kakao.buttonLabel}]`;
+  const kakaoText = buildKakaoMessageText(guide);
 
   useEffect(() => {
     if (channel !== "qr") return;

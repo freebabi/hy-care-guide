@@ -63,6 +63,13 @@ export default function CmsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400">
+                  검색 결과가 없습니다.
+                </td>
+              </tr>
+            )}
             {filtered.map((g) => (
               <tr key={g.contentId}>
                 <td className="px-4 py-3 font-semibold text-slate-800">{g.title}</td>

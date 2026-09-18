@@ -13,12 +13,10 @@ export default function GuideCard({
   guide,
   onPreview,
   onEdit,
-  showStatus,
 }: {
   guide: GuideContent;
   onPreview: () => void;
   onEdit?: () => void;
-  showStatus?: boolean;
 }) {
   return (
     <article className="flex flex-col gap-2.5 rounded-xl border border-slate-200 bg-white p-4 transition-colors hover:border-slate-300">
@@ -32,15 +30,6 @@ export default function GuideCard({
         <span className="rounded-full bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
           {guide.subcategory}
         </span>
-        {showStatus && (
-          <span
-            className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
-              guide.status === "게시" ? "bg-slate-100 text-slate-600" : "bg-slate-100 text-slate-400"
-            }`}
-          >
-            {guide.status}
-          </span>
-        )}
         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400">
           <ClockIcon className="h-3 w-3" /> {guide.estimatedReadMinutes}분
         </span>

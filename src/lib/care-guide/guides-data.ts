@@ -896,10 +896,6 @@ export const GUIDES: GuideContent[] = [
   },
 ];
 
-export function findGuideById(contentId: string): GuideContent | undefined {
-  return GUIDES.find((g) => g.contentId === contentId);
-}
-
 export function findGuideBySlug(slug: string): GuideContent | undefined {
   return GUIDES.find((g) => g.slug === slug);
 }

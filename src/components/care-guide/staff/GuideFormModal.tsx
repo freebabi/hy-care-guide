@@ -154,7 +154,7 @@ export default function GuideFormModal({
           />
         </Field>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <Field label="대표 카테고리">
             <select
               value={form.category}
@@ -229,17 +229,15 @@ export default function GuideFormModal({
           </div>
         </Field>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="예상 읽기 시간(분)">
-            <input
-              type="number"
-              min={1}
-              value={form.estimatedReadMinutes}
-              onChange={(e) => setForm({ ...form, estimatedReadMinutes: Number(e.target.value) })}
-              className={inputClass}
-            />
-          </Field>
-        </div>
+        <Field label="예상 읽기 시간(분)">
+          <input
+            type="number"
+            min={1}
+            value={form.estimatedReadMinutes}
+            onChange={(e) => setForm({ ...form, estimatedReadMinutes: Number(e.target.value) })}
+            className={inputClass}
+          />
+        </Field>
 
         <Field label="한눈에 보는 안내(요약)">
           <textarea
