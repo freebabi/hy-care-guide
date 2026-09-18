@@ -46,8 +46,12 @@ export default function StaffHomePage() {
   const previewGuide = previewId ? guides.find((g) => g.contentId === previewId) : null;
 
   const chipBase = "rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors";
-  const chipActive = "border-brand-blue bg-brand-blue text-white";
-  const chipInactive = "border-slate-200 bg-white text-slate-500 hover:border-brand-blue/40 hover:text-brand-blue";
+  const chipInactive =
+    "border-slate-200 bg-white text-slate-500 hover:border-brand-blue/30 hover:bg-blue-soft/60 hover:text-brand-blue-dark";
+  // 1차 필터(카테고리): 브랜드 블루 solid fill로 가장 강한 위계
+  const chipActivePrimary = "border-brand-blue bg-brand-blue text-white";
+  // 2차 필터(여정 단계): soft blue 배경 + 네이비 텍스트로 1차보다 한 단계 낮은 위계
+  const chipActiveSecondary = "border-blue-soft bg-blue-soft text-brand-blue-dark";
 
   return (
     <div className="flex flex-col gap-8">
@@ -85,7 +89,7 @@ export default function StaffHomePage() {
                   key={c}
                   type="button"
                   onClick={() => setCategory(c)}
-                  className={`${chipBase} ${category === c ? chipActive : chipInactive}`}
+                  className={`${chipBase} ${category === c ? chipActivePrimary : chipInactive}`}
                 >
                   {c}
                 </button>
@@ -95,7 +99,7 @@ export default function StaffHomePage() {
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-500 outline-none transition-colors focus:border-brand-blue"
+              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-500 outline-none transition-colors hover:border-brand-blue/30 focus:border-brand-blue"
             >
               {departments.map((d) => (
                 <option key={d} value={d}>
@@ -110,7 +114,7 @@ export default function StaffHomePage() {
             <button
               type="button"
               onClick={() => setStage("전체")}
-              className={`${chipBase} ${stage === "전체" ? chipActive : chipInactive}`}
+              className={`${chipBase} ${stage === "전체" ? chipActiveSecondary : chipInactive}`}
             >
               전체
             </button>
@@ -119,7 +123,7 @@ export default function StaffHomePage() {
                 key={s.code}
                 type="button"
                 onClick={() => setStage(s.code)}
-                className={`${chipBase} ${stage === s.code ? chipActive : chipInactive}`}
+                className={`${chipBase} ${stage === s.code ? chipActiveSecondary : chipInactive}`}
               >
                 {s.label}
               </button>

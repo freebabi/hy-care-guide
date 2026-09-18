@@ -46,8 +46,8 @@ export default function StaffNav() {
                 href={item.href}
                 className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm transition-colors ${
                   isActive
-                    ? "bg-brand-blue/[0.07] font-semibold text-brand-blue"
-                    : "font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                    ? "bg-blue-soft font-semibold text-brand-blue-dark"
+                    : "font-medium text-slate-500 hover:bg-blue-soft/60 hover:text-brand-blue-dark"
                 }`}
               >
                 {Icon && <Icon className="h-4 w-4" />}

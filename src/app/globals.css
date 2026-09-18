@@ -10,11 +10,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans-kr);
 
-  /* HY Care Guide 브랜드 컬러: 한양대학교병원 사파이어 블루 & 스마트 틸/시안 계열 */
-  --color-brand-blue: #004080;
-  --color-brand-blue-dark: #003366;
-  --color-brand-teal: #0088a8;
-  --color-brand-cyan: #00a3b1;
+  /* HY Care Guide 브랜드 컬러: Hanyang Blue 계열의 색상 hierarchy.
+     brand-blue(Primary)를 중심으로, dark는 hover/강조, light는 보조 인터랙션,
+     soft/mist는 배경 톤으로 사용해 "화이트+그레이"가 아닌 "화이트+블루" 톤을 만든다. */
+  --color-brand-blue-dark: #0e4a84; /* Navy - hover/강조 */
+  --color-brand-blue: #1b67a9; /* Primary Blue - 핵심 인터랙션 */
+  --color-brand-blue-light: #2d8fd5; /* Secondary Blue - 보조 인터랙션 */
+  --color-blue-soft: #eef6fc; /* Soft Blue Background - active/배지 배경 */
+  --color-blue-mist: #f6fafd; /* Very Light Blue - 페이지 배경 */
+  --color-brand-teal: #149e9a; /* Teal Accent - 절제된 포인트 */
+  --color-brand-success: #3e9b70; /* Success Green - 절제된 포인트 */
 
   /* 콘텐츠 미리보기 모달 전용 Toss 스타일 컬러 */
   --color-toss-blue: #3182f6;
