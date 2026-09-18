@@ -1,6 +1,7 @@
 # HY CARE GUIDE (한양 케어가이드)
 
-> 🔗 배포 주소: (배포 후 채워짐)
+> 🔗 배포 주소: [https://hello-page-wine.vercel.app](https://hello-page-wine.vercel.app)
+> 📦 저장소: [https://github.com/freebabi/hy-care-guide](https://github.com/freebabi/hy-care-guide)
 
 환자정보시스템이 아니라 **"환자 안내 콘텐츠 + 전달 지원 시스템"**으로 동작하는
 프로토타입입니다. EMR/EHR과 연동해 환자 개인정보를 직접 보유하지 않고, 직원이
