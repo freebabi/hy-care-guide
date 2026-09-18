@@ -33,7 +33,7 @@ export default function GuideCard({
             className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold ${CATEGORY_BADGE[guide.category]}`}
           >
             <CategoryIcon category={guide.category} className="h-3 w-3" />
-            {guide.category}
+            {guide.categoryLabelOverride ?? guide.category}
           </span>
           <span className="truncate text-[11px] font-medium text-slate-400">{guide.subcategory}</span>
         </div>

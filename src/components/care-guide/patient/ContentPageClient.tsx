@@ -38,7 +38,9 @@ export default function ContentPageClient({ slug }: { slug: string }) {
 
   return (
     <div>
-      <p className="mb-4 text-base font-semibold text-slate-500">한양대학교병원 {guide.category} 안내</p>
+      <p className="mb-4 text-base font-semibold text-slate-500">
+        한양대학교병원 {guide.categoryLabelOverride ?? guide.category} 안내
+      </p>
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <GuideDetailView
           guide={guide}

@@ -48,7 +48,7 @@ export default function GuideDetailView({
   variant?: "staff" | "patient";
   onSelectRelated?: (contentId: string) => void;
 }) {
-  const phaseLabels = PHASE_LABELS[guide.category];
+  const phaseLabels = { ...PHASE_LABELS[guide.category], ...guide.phaseLabelOverride };
   // 환자용 화면은 고령 환자도 읽기 편하도록 본문 텍스트를 16px(text-base) 이상으로 키웁니다.
   const bodyTextClass = variant === "patient" ? "text-base" : "text-sm";
   const phoneNumber = guide.contact ? extractPhoneNumber(guide.contact) : null;
@@ -59,7 +59,7 @@ export default function GuideDetailView({
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 text-xs font-bold text-brand-blue">
             <CategoryIcon category={guide.category} className="h-3.5 w-3.5" />
-            {guide.category} · {guide.subcategory}
+            {guide.categoryLabelOverride ?? guide.category} · {guide.subcategory}
           </span>
           <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-400">
             <ClockIcon className="h-3.5 w-3.5" /> 예상 읽기 시간 {guide.estimatedReadMinutes}분

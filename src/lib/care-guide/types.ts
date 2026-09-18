@@ -73,6 +73,14 @@ export interface GuideContent {
   contact?: string;
   /** 10. 관련 안내 */
   relatedContentIds?: string[];
+  /**
+   * category별 고정 라벨(PHASE_LABELS)로는 맞지 않는 콘텐츠(예: "수술" 카테고리에
+   * 속하지만 실제로는 "시술"인 콘텐츠)를 위한 섹션 제목 재정의. 지정한 키만
+   * 덮어쓰고 나머지는 category 기본값을 그대로 사용합니다.
+   */
+  phaseLabelOverride?: { before?: string; during?: string; after?: string };
+  /** 환자 화면 상단 "한양대학교병원 {카테고리} 안내" 문구에서 category 대신 쓸 단어. */
+  categoryLabelOverride?: string;
   estimatedReadMinutes: number;
   status: "게시" | "비게시";
   /** 병원 공식 검토가 필요한 프로토타입 콘텐츠 여부 */
