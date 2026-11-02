@@ -2,7 +2,7 @@ import { GUIDES } from "./guides-data";
 import { readStorage, writeStorage } from "./storage";
 import type { GuideContent } from "./types";
 
-const STORAGE_KEY = "hycg.guides.v3";
+const STORAGE_KEY = "hycg.guides.v4";
 
 /** CMS에서 추가/수정한 콘텐츠까지 반영된 최신 콘텐츠 목록을 반환합니다. */
 export function loadGuides(): GuideContent[] {
