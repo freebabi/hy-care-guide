@@ -32,7 +32,7 @@ function Section({
   return (
     <div>
       <h3 className="text-sm font-bold text-slate-800">{title}</h3>
-      <div className={`mt-1.5 leading-relaxed text-slate-600 ${bodyClassName}`}>{children}</div>
+      <div className={`mt-1.5 whitespace-pre-line leading-relaxed text-slate-600 ${bodyClassName}`}>{children}</div>
     </div>
   );
 }
