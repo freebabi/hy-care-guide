@@ -77,7 +77,7 @@ export default function GuideDetailView({
           <WarningIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
           <div>
             <p className="text-sm font-bold text-amber-800">꼭 확인해주세요</p>
-            <p className={`mt-1 leading-relaxed text-amber-900 ${bodyTextClass}`}>{guide.importantNotice}</p>
+            <p className={`mt-1 whitespace-pre-line leading-relaxed text-amber-900 ${bodyTextClass}`}>{guide.importantNotice}</p>
           </div>
         </div>
       )}
