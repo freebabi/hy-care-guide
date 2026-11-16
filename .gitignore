@@ -1,0 +1,56 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# bkit runtime state (checkpoints, audit logs, token ledger)
+/.bkit/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# employee login log (personal data - never commit)
+/.data/
+
+# 병원 원본 안내자료(약 260MB, 로컬 전용) - 저장소에 올리지 않음
+/reference-materials/
+
+# 병원 내부 분석·검토 문서(원문 인용·내부 규정 정보 포함, 로컬 전용)
+/docs/reference-analysis/
+/docs/audit/
+/RELEASE_CONTENT_REVIEW.md

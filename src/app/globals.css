@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  /* Noto Sans KR 은 저장소의 fonts/noto-sans-kr.css 로 불러옵니다(구글 서버 접속 불필요). 없으면 시스템 한글 글꼴로 넘어갑니다. */
+  --font-sans: "Noto Sans KR", "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo";
+
+  /* HY Care Guide 브랜드 컬러: Hanyang Blue 계열의 색상 hierarchy.
+     brand-blue(Primary)를 중심으로, dark는 hover/강조, light는 보조 인터랙션,
+     soft/mist는 배경 톤으로 사용해 "화이트+그레이"가 아닌 "화이트+블루" 톤을 만든다. */
+  --color-brand-blue-dark: #0e4a84; /* Navy - hover/강조 */
+  --color-brand-blue: #1b67a9; /* Primary Blue - 핵심 인터랙션 */
+  --color-brand-blue-light: #2d8fd5; /* Secondary Blue - 보조 인터랙션 */
+  --color-blue-soft: #eef6fc; /* Soft Blue Background - active/배지 배경 */
+  --color-blue-mist: #f6fafd; /* Very Light Blue - 페이지 배경 */
+  --color-brand-teal: #149e9a; /* Teal Accent - 절제된 포인트 */
+  --color-brand-success: #3e9b70; /* Success Green - 절제된 포인트 */
+
+  /* 콘텐츠 미리보기 모달 전용 Toss 스타일 컬러 */
+  --color-toss-blue: #3182f6;
+  --color-toss-blue-dark: #1b64da;
+  --color-toss-gray: #f2f4f6;
+
+  --animate-fade-in: fade-in 0.5s ease-out both;
+  --animate-fade-in-up: fade-in-up 0.5s ease-out both;
+  --animate-float-in: float-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-toast-in: toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-bubble-in: bubble-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Premium modal motion: 눈에 띄는 스프링 효과 대신, 아주 짧고 절제된 slide-up */
+  --animate-modal-in: modal-in 0.2s ease-out both;
+  --animate-modal-out: modal-out 0.15s ease-in both;
+  --animate-overlay-in: overlay-in 0.2s ease-out both;
+  --animate-overlay-out: overlay-out 0.15s ease-in both;
+  /* 필터/검색 결과가 바뀔 때 화면이 튀지 않도록 쓰는 아주 짧은 크로스페이드 */
+  --animate-content-swap: fade-in 0.18s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* motion을 선호하지 않는 사용자를 위해 모든 애니메이션·트랜지션·부드러운 스크롤을 사실상 즉시 처리한다. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 안내자료 구성 → 인쇄용 화면. 이미지·제목이 페이지 경계에서 잘리지 않도록 나눔 규칙을 지정한다. */
+@media print {
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    background: #fff !important;
+  }
+  .print-guide details:has(nav[aria-label="이 안내의 목차"]) {
+    display: none;
+  }
+  .print-guide figure,
+  .print-guide img,
+  .print-guide .rounded-xl,
+  .print-guide .rounded-lg,
+  .print-guide ol > li,
+  .print-guide table,
+  .print-guide tr {
+    break-inside: avoid;
+  }
+  .print-guide img {
+    max-width: 100%;
+    height: auto;
+  }
+  .print-guide figure {
+    break-before: auto;
+  }
+  .print-guide h2,
+  .print-guide h3 {
+    break-after: avoid;
+  }
+  .print-guide p,
+  .print-guide li {
+    orphans: 3;
+    widows: 3;
+  }
+  /* 맨 끝 안내 문장이 혼자 한 쪽을 차지하지 않도록 앞 내용과 붙여 둔다 */
+  .print-guide p.border-t {
+    break-before: avoid;
+  }
+  .print-break {
+    break-before: page;
+  }
+}

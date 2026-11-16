@@ -1,0 +1,24 @@
+# 이미지에 넣지 않는 것: 비밀값, 원본 자료, 빌드 결과, 개발 도구 파일
+.git
+.gitignore
+.gitattributes
+node_modules
+.next
+.data
+.vercel
+.bkit
+.claude
+.env
+.env.*
+!.env.example
+reference-materials
+docs
+RELEASE_CONTENT_REVIEW.md
+PUBLIC_RELEASE_CHECKLIST.md
+README.md
+AGENTS.md
+CLAUDE.md
+Dockerfile
+.dockerignore
+*.log
+*.tsbuildinfo
